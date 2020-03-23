@@ -1,0 +1,8 @@
+appConfig {
+  dataBase = 'couchbase'
+  javaMainClass = "com.rico.couchbase.CBTestApplication"
+}
+
+dependencies {
+    implementation project(':ro-common')
+}

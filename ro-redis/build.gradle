@@ -1,0 +1,8 @@
+appConfig {
+  cache = 'y'
+  javaMainClass = "com.rico.redis.RedisApplication"
+}
+
+dependencies {
+    implementation project(':ro-common')
+}

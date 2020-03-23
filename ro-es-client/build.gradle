@@ -1,0 +1,8 @@
+appConfig {
+  search = 'y'
+  javaMainClass = "com.rico.es.ESClientApplication"
+}
+
+dependencies {
+    implementation project(':ro-common')
+}

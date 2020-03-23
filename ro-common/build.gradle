@@ -1,0 +1,50 @@
+plugins {
+	id "com.google.protobuf" version "0.8.11"
+}
+
+dependencies {
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
+// Place proto files under src/main/proto
+sourceSets {
+  main {
+    proto {
+            srcDir 'src/main/proto'
+        }
+     java {
+            srcDir 'src/main/java'
+        }
+  }
+}
+
+//Generate java classes based on proto files
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:${protobufVersion}"
+  }
+  plugins {
+    grpc {
+      artifact = "io.grpc:protoc-gen-grpc-java::${protocJavaVersion}"
+    }
+  }
+  
+  generateProtoTasks {
+        ofSourceSet('main').each { task ->
+            task.builtins {
+                java{
+                    outputSubDir = 'java'
+                }
+            }
+            task.plugins {
+                grpc {
+                    outputSubDir = 'java'
+                }
+            }
+        }
+    }
+    generatedFilesBaseDir = "$projectDir/src"
+}
+

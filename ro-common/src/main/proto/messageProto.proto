@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "ro.common.generated";
+
+message MessageProto {
+  int64 id = 1;
+  string status = 2;
+  bytes data = 4;
+}

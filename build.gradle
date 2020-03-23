@@ -1,0 +1,220 @@
+buildscript {
+   repositories {
+     mavenCentral()
+   }
+}
+
+plugins {
+  id 'io.spring.dependency-management' version "1.0.8.RELEASE" apply false
+  id 'org.springframework.boot' version '2.2.4.RELEASE' apply false
+}
+
+ext {
+  protobufVersion = "3.11.4"
+  protocJavaVersion = "1.27.1"
+  grpcVersion = "2.7.0.RELEASE"
+}
+
+//Compile only libraries for common application
+project(':ro-common') {
+  apply plugin: 'java-library'
+    project.with {
+            dependencies {
+			    compileOnly 'org.springframework.data:spring-data-couchbase'
+			    compileOnly 'org.springframework.kafka:spring-kafka'
+			    
+			    compileOnly 'org.springframework.data:spring-data-redis' 
+			    compileOnly "com.google.protobuf:protobuf-java:${protobufVersion}"
+			    
+				compileOnly "net.devh:grpc-spring-boot-starter:${grpcVersion}"
+				compileOnly "io.grpc:grpc-protobuf:${protocJavaVersion}"
+				compileOnly "io.grpc:grpc-stub:${protocJavaVersion}"
+				compileOnly "io.grpc:grpc-netty-shaded:${protocJavaVersion}"
+			    
+			    compileOnly 'io.lettuce:lettuce-core'
+			    compileOnly 'de.ruedigermoeller:fst:2.56'
+			    
+			    compileOnly 'org.springframework.data:spring-data-elasticsearch'
+			    compileOnly 'org.springframework.data:spring-data-jpa'
+			    compileOnly 'org.hibernate:hibernate-entitymanager'
+			    compileOnly 'mysql:mysql-connector-java'
+			    compileOnly 'com.zaxxer:HikariCP'
+            }
+         }
+}
+
+//Extension for configuring ro plugin
+class ROExtension {
+    String dataBase
+    String persistence
+    String cache
+    String queue
+    String grpc
+    String grpcServer
+    String grpcClient
+    String rest
+    String search
+    String javaMainClass
+}
+
+//Custom ro plugin for dependency managment and tools integration
+class roapp implements Plugin<Project> {
+
+    void apply(Project project) {
+        def extension = project.extensions.create('appConfig', ROExtension)
+        project.afterEvaluate {
+        
+         def props = new Properties()
+         
+	        project.with {
+	            dependencies {
+	                implementation 'org.springframework.boot:spring-boot-starter'
+	                
+	                //Adding spring boot test frameworks to all applications
+	                testImplementation('org.springframework.boot:spring-boot-starter-test') {
+	                   exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	                }
+	                
+	                if(extension.rest == 'y'){
+	                  implementation 'org.springframework.boot:spring-boot-starter-web'
+	                }
+	                if(extension.search == 'y'){
+	                  implementation 'org.springframework.data:spring-data-elasticsearch'
+	                  
+	                  if(extension.rest != 'y'){
+	                     runtimeOnly('org.springframework.boot:spring-boot-starter-web'){
+	                       exclude module: "spring-boot-tomcat"
+	                     }
+	                   }
+	                }
+				    if(extension.dataBase == 'couchbase') { 
+				      implementation 'org.springframework.data:spring-data-couchbase'
+				       props.setProperty("database", extension.dataBase)
+				    }
+				    if(extension.cache == 'y') {
+				      runtimeOnly 'org.springframework.data:spring-data-redis'
+				      runtimeOnly 'io.lettuce:lettuce-core'
+				    }
+				    if(extension.queue == 'y') {				    
+					  implementation 'org.springframework.kafka:spring-kafka'
+					  runtimeOnly "com.google.protobuf:protobuf-java:${protobufVersion}"
+					  runtimeOnly 'de.ruedigermoeller:fst:2.56'
+				    }
+				    // For both grpc server and grpc client
+				    if(extension.grpc == 'y') {
+					  implementation "net.devh:grpc-spring-boot-starter:${grpcVersion}"
+					}else if(extension.grpcServer == 'y') {
+					  // For grpc server
+					  implementation "net.devh:grpc-server-spring-boot-starter:${grpcVersion}"
+					  runtimeOnly "io.grpc:grpc-stub:${protocJavaVersion}"
+					}else if(extension.grpcClient == 'y') {
+					  // For grpc client
+					  implementation "net.devh:grpc-client-spring-boot-starter:${grpcVersion}"
+					}
+					
+					if(extension.grpc == 'y' || extension.grpcClient == 'y') {
+					  implementation "io.grpc:grpc-stub:${protocJavaVersion}"
+					}
+					if(extension.grpc == 'y' || extension.grpcServer == 'y' || extension.grpcClient == 'y') {
+					  runtimeOnly "io.grpc:grpc-protobuf:${protocJavaVersion}"
+					  runtimeOnly "io.grpc:grpc-netty-shaded:${protocJavaVersion}"
+					}
+					
+					//Writing project infos
+	                def propertyFile = file("src/main/resources/projectInfo.properties")
+                    props.setProperty("version", project.version)
+					props.store propertyFile.newWriter(), null
+	            }
+	         }
+         } 
+    }
+}
+
+// Configurations applied to all subprojects
+subprojects {
+
+  group = 'com.ro'
+  version = '0.0.1-SNAPSHOT'
+
+  repositories {
+    jcenter()
+    mavenCentral()
+  }
+  
+  apply plugin: 'java'
+  apply plugin: 'io.spring.dependency-management'
+  
+  //apply to all sub project except common
+  if (!it.name.startsWith('ro-common')) {
+  
+    apply plugin: roapp
+	apply plugin: 'org.springframework.boot'
+	
+	//Defining custom build task
+	def buildApp = tasks.register("build-${project.name}") {
+	  group = 'ro'
+	  description = 'Build application'
+	}
+	
+	buildApp.configure {
+	 doFirst {
+	     if(!project.appConfig.javaMainClass) {
+	        throw new GradleException('No Java Main class is configured for the application')
+	     }
+	     if(project.appConfig.dataBase) {
+	       if(project.appConfig.dataBase != "couchbase" && project.appConfig.dataBase != "postgres" && project.appConfig.dataBase != "mysql" ){
+	            throw new GradleException('Unsupported database '+project.appConfig.dataBase+". Supports only couchbase, postgres and mysql.")
+	        }
+	     }
+	     if(project.appConfig.persistence) {
+	       if(project.appConfig.persistence != "jpa" && project.appConfig.persistence != "hibernate"){
+	            throw new GradleException('Unsupported persistence layer '+project.appConfig.persistence+". Supports only jpa and hibernate.")
+	        }
+	     }
+	     String enabledServices=""
+	     if(project.appConfig.dataBase){
+	       enabledServices += project.appConfig.dataBase +" "
+	     }
+	     if(project.appConfig.cache){
+	       enabledServices += "redis "
+	     }
+	     if(project.appConfig.search){
+	       enabledServices += "elastic-search "
+	     }
+	     if(project.appConfig.queue){
+	       enabledServices += "kafka "
+	     }
+	     if(project.appConfig.grpc){
+	       enabledServices += "grpc "
+	     }
+	     if(project.appConfig.grpcServer){
+	       enabledServices += "grpc-server "
+	     }
+	     if(project.appConfig.grpcClient){
+	       enabledServices += "grpc-client "
+	     }
+	     println "Enabled services are : ${enabledServices}"
+	  }
+	  dependsOn build
+	}
+	
+	//Defining custom run task
+	def runApp = tasks.register("run-${project.name}", JavaExec) {
+	    group = 'ro'
+	    description = 'Run application'
+	    dependsOn buildApp
+	    classpath = sourceSets.main.runtimeClasspath
+        main = project.appConfig.javaMainClass
+        ignoreExitValue = true
+	}
+  }
+  
+  sourceCompatibility = '1.8'
+  targetCompatibility = '1.8'
+ 
+  dependencyManagement {
+    imports {
+      mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE")
+    }
+  }
+}

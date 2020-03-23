@@ -1,0 +1,13 @@
+appConfig {
+  grpcClient = 'y'
+  search = 'y'
+  javaMainClass = "com.healtrip.client.HtClientApplication"
+}
+
+dependencies {
+    implementation project(':ro-common')
+	 
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}

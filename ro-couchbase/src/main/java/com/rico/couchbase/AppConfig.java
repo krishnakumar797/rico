@@ -1,12 +1,10 @@
 /* Licensed under Apache-2.0 */
 package com.rico.couchbase;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ro.common.couchbase.CouchBaseConfig;
 
 /**

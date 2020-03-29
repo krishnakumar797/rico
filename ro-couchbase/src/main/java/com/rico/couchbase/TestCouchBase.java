@@ -1,27 +1,23 @@
 /* Licensed under Apache-2.0 */
 package com.rico.couchbase;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rico.couchbase.documents.Accounts;
 import com.rico.couchbase.documents.Address;
 import com.rico.couchbase.documents.Business;
 import com.rico.couchbase.documents.User;
 import com.rico.couchbase.services.UserService;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Component;
 
 /**
  * Testing Couchbase service
@@ -48,7 +44,7 @@ public class TestCouchBase {
             "CF24 3DG");
     Business business = new Business("Mark Twain", "Partnership", "Australia");
     User user = new User("private", "t", 25, address, getAccounts(), business);
-    //  userService.saveUser(user);
+    userService.saveUser(user);
 
     address =
         new Address(
@@ -61,7 +57,7 @@ public class TestCouchBase {
             "BA1 2FJ");
     business = new Business("Lovell", "Manufacturing", "Ireland");
     user = new User("rico", "ro", 24, address, getAccounts(), business);
-    //    userService.saveUser(user);
+    userService.saveUser(user);
 
     address =
         new Address(
@@ -74,7 +70,7 @@ public class TestCouchBase {
             "BN1 2NW");
     business = new Business("ACME", "Construction", "Scotland");
     user = new User("kowalski", "k", 26, address, getAccounts(), business);
-    //   userService.saveUser(user);
+    userService.saveUser(user);
 
     // Retrieving users by firstName
     List<User> userList = userService.getUserByFirstName("private");
@@ -124,9 +120,8 @@ public class TestCouchBase {
       optional
           .get()
           .forEach(
-              node -> {
-                System.out.println("USERNAMES RETRIEVED BY COUNTRY " + node.toPrettyString());
-              });
+              node ->
+                  System.out.println("USERNAMES RETRIEVED BY COUNTRY " + node.toPrettyString()));
     } else {
       System.out.println("NO USERNAMES FOUND FOR THE SPECIFIED COUNTRY");
     }
@@ -142,7 +137,7 @@ public class TestCouchBase {
         address = userService.getAddressByUserId(user.getId());
         System.out.println("SUCCESSFULLY RETRIEVED ADDRESS " + address.getCity());
       } catch (JsonProcessingException e) {
-        System.out.println("JSON MAPPING ERROR "+e.getMessage());
+        System.out.println("JSON MAPPING ERROR " + e.getMessage());
       }
     }
   }
@@ -152,6 +147,7 @@ public class TestCouchBase {
    *
    * @return
    */
+  @SuppressWarnings({"squid:S1192"})
   private List<Accounts> getAccounts() {
     return Arrays.asList(
         new Accounts("Horizon First Bank", "Savings", 589400),

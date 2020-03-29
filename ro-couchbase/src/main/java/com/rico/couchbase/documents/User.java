@@ -1,16 +1,13 @@
 /* Licensed under Apache-2.0 */
 package com.rico.couchbase.documents;
 
-import java.util.List;
-
-import org.springframework.data.couchbase.core.mapping.Document;
-
 import com.couchbase.client.java.repository.annotation.Field;
-
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.couchbase.core.mapping.Document;
 import ro.common.couchbase.CBDoc;
 
 /**
@@ -32,8 +29,8 @@ public class User extends CBDoc {
   @Field private Integer age;
 
   @Field private Address address;
-  
+
   @Field private List<Accounts> accounts;
-  
+
   @Field private Business business;
 }

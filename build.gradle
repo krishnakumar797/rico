@@ -1,12 +1,16 @@
 buildscript {
    repositories {
      mavenCentral()
+     jcenter()
    }
 }
 
 plugins {
   id 'io.spring.dependency-management' version "1.0.8.RELEASE" apply false
   id 'org.springframework.boot' version '2.2.4.RELEASE' apply false
+  id "name.remal.sonarlint" version "1.0.178" apply false
+  id "io.freefair.lombok" version "5.0.0-rc6" apply false
+  id "com.diffplug.gradle.spotless" version "3.28.0" apply false
 }
 
 ext {
@@ -67,6 +71,7 @@ class roapp implements Plugin<Project> {
          def props = new Properties()
          
 	        project.with {
+	            // Defining dependencies
 	            dependencies {
 	                implementation 'org.springframework.boot:spring-boot-starter'
 	                
@@ -125,6 +130,65 @@ class roapp implements Plugin<Project> {
                     props.setProperty("version", project.version)
 					props.store propertyFile.newWriter(), null
 	            }
+	            
+	            
+	            //Defining custom build task
+				def buildApp = tasks.register("build-${project.name}") {
+				  group = 'ro'
+				  description = 'Build application'
+				}
+				
+				buildApp.configure {
+				 doFirst {
+				     if(!project.appConfig.javaMainClass) {
+				        throw new GradleException('No Java Main class is configured for the application')
+				     }
+				     if(project.appConfig.dataBase) {
+				       if(project.appConfig.dataBase != "couchbase" && project.appConfig.dataBase != "postgres" && project.appConfig.dataBase != "mysql" ){
+				            throw new GradleException('Unsupported database '+project.appConfig.dataBase+". Supports only couchbase, postgres and mysql.")
+				        }
+				     }
+				     if(project.appConfig.persistence) {
+				       if(project.appConfig.persistence != "jpa" && project.appConfig.persistence != "hibernate"){
+				            throw new GradleException('Unsupported persistence layer '+project.appConfig.persistence+". Supports only jpa and hibernate.")
+				        }
+				     }
+				     String enabledServices=""
+				     if(project.appConfig.dataBase){
+				       enabledServices += project.appConfig.dataBase +" "
+				     }
+				     if(project.appConfig.cache){
+				       enabledServices += "redis "
+				     }
+				     if(project.appConfig.search){
+				       enabledServices += "elastic-search "
+				     }
+				     if(project.appConfig.queue){
+				       enabledServices += "kafka "
+				     }
+				     if(project.appConfig.grpc){
+				       enabledServices += "grpc "
+				     }
+				     if(project.appConfig.grpcServer){
+				       enabledServices += "grpc-server "
+				     }
+				     if(project.appConfig.grpcClient){
+				       enabledServices += "grpc-client "
+				     }
+				     println "Enabled services are : ${enabledServices}"
+				  }
+				  dependsOn build
+				}
+				
+				//Defining custom run task
+				def runApp = tasks.register("run-${project.name}", JavaExec) {
+				    group = 'ro'
+				    description = 'Run application'
+				    dependsOn buildApp
+				    classpath = sourceSets.main.runtimeClasspath
+			        main = project.appConfig.javaMainClass
+			        ignoreExitValue = true
+				}
 	         }
          } 
     }
@@ -142,71 +206,33 @@ subprojects {
   }
   
   apply plugin: 'java'
+  apply plugin: 'name.remal.sonarlint'
   apply plugin: 'io.spring.dependency-management'
+  apply plugin: 'io.freefair.lombok'
+  apply plugin: 'com.diffplug.gradle.spotless'
+  
+  // Applying sonarlint plugin
+  sonarlint {
+     ignoreFailures = false
+	 excludes {
+	      source 'ro/common/generated/*'
+	 }
+   }
+   
+  // Applying spotless plugin with google java formatter
+   spotless {
+    java {
+      googleJavaFormat()
+      licenseHeader '/* Licensed under Apache-2.0 */'
+    }
+  }
   
   //apply to all sub project except common
   if (!it.name.startsWith('ro-common')) {
   
     apply plugin: roapp
 	apply plugin: 'org.springframework.boot'
-	
-	//Defining custom build task
-	def buildApp = tasks.register("build-${project.name}") {
-	  group = 'ro'
-	  description = 'Build application'
-	}
-	
-	buildApp.configure {
-	 doFirst {
-	     if(!project.appConfig.javaMainClass) {
-	        throw new GradleException('No Java Main class is configured for the application')
-	     }
-	     if(project.appConfig.dataBase) {
-	       if(project.appConfig.dataBase != "couchbase" && project.appConfig.dataBase != "postgres" && project.appConfig.dataBase != "mysql" ){
-	            throw new GradleException('Unsupported database '+project.appConfig.dataBase+". Supports only couchbase, postgres and mysql.")
-	        }
-	     }
-	     if(project.appConfig.persistence) {
-	       if(project.appConfig.persistence != "jpa" && project.appConfig.persistence != "hibernate"){
-	            throw new GradleException('Unsupported persistence layer '+project.appConfig.persistence+". Supports only jpa and hibernate.")
-	        }
-	     }
-	     String enabledServices=""
-	     if(project.appConfig.dataBase){
-	       enabledServices += project.appConfig.dataBase +" "
-	     }
-	     if(project.appConfig.cache){
-	       enabledServices += "redis "
-	     }
-	     if(project.appConfig.search){
-	       enabledServices += "elastic-search "
-	     }
-	     if(project.appConfig.queue){
-	       enabledServices += "kafka "
-	     }
-	     if(project.appConfig.grpc){
-	       enabledServices += "grpc "
-	     }
-	     if(project.appConfig.grpcServer){
-	       enabledServices += "grpc-server "
-	     }
-	     if(project.appConfig.grpcClient){
-	       enabledServices += "grpc-client "
-	     }
-	     println "Enabled services are : ${enabledServices}"
-	  }
-	  dependsOn build
-	}
-	
-	//Defining custom run task
-	def runApp = tasks.register("run-${project.name}", JavaExec) {
-	    group = 'ro'
-	    description = 'Run application'
-	    dependsOn buildApp
-	    classpath = sourceSets.main.runtimeClasspath
-        main = project.appConfig.javaMainClass
-        ignoreExitValue = true
-	}
+
   }
   
   sourceCompatibility = '1.8'

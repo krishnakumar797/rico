@@ -1,18 +1,18 @@
+/* Licensed under Apache-2.0 */
 package com.rico.kafka.utils;
 
 public enum QueueTopics {
+  TEST("test"),
+  USER("user");
 
-	TEST("test"), USER("user");
+  private String val;
 
-	private String val;
+  QueueTopics(String val) {
+    this.val = val;
+  }
 
-	QueueTopics(String val) {
-		this.val = val;
-	}
-
-	@Override
-	public String toString() {
-		return val;
-	}
-
+  @Override
+  public String toString() {
+    return val;
+  }
 }

@@ -1,7 +1,4 @@
-/* Licensed under Apache-2.0 */
 package com.rico.couchbase.documents;
-
-import java.util.List;
 
 import org.springframework.data.couchbase.core.mapping.Document;
 
@@ -23,17 +20,11 @@ import ro.common.couchbase.CBDoc;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends CBDoc {
-
-  @Field private String firstName;
-
-  @Field private String lastName;
-
-  @Field private Integer age;
-
-  @Field private Address address;
-  
-  @Field private List<Accounts> accounts;
-  
-  @Field private Business business;
+public class Business extends CBDoc {
+	
+	@Field private String businessName;
+	
+	@Field private String businessType;
+	
+	@Field private String location;
 }

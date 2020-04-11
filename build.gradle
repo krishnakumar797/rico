@@ -38,10 +38,14 @@ project(':ro-common') {
 			    compileOnly 'io.lettuce:lettuce-core'
 			    compileOnly 'de.ruedigermoeller:fst:2.56'
 			    
+			    compileOnly 'org.apache.logging.log4j:log4j-api'
+                compileOnly 'org.apache.logging.log4j:log4j-core'
+			    
 			    compileOnly 'org.springframework.data:spring-data-elasticsearch'
 			    compileOnly 'org.springframework.data:spring-data-jpa'
 			    compileOnly 'org.hibernate:hibernate-entitymanager'
 			    compileOnly 'mysql:mysql-connector-java'
+			    compileOnly 'org.postgresql:postgresql'
 			    compileOnly 'com.zaxxer:HikariCP'
             }
          }
@@ -58,6 +62,7 @@ class ROExtension {
     String grpcClient
     String rest
     String search
+    String logging
     String javaMainClass
 }
 
@@ -66,6 +71,7 @@ class roapp implements Plugin<Project> {
 
     void apply(Project project) {
         def extension = project.extensions.create('appConfig', ROExtension)
+        def date = new Date()
         project.afterEvaluate {
         
          def props = new Properties()
@@ -73,6 +79,9 @@ class roapp implements Plugin<Project> {
 	        project.with {
 	            // Defining dependencies
 	            dependencies {
+	                 
+	                 def propertyFile = file("src/main/resources/projectInfo.properties")
+	                 
 	                implementation 'org.springframework.boot:spring-boot-starter'
 	                
 	                //Adding spring boot test frameworks to all applications
@@ -94,7 +103,7 @@ class roapp implements Plugin<Project> {
 	                }
 				    if(extension.dataBase == 'couchbase') { 
 				      implementation 'org.springframework.data:spring-data-couchbase'
-				       props.setProperty("database", extension.dataBase)
+				       props.setProperty("database", 'couchbase')
 				    }
 				    if(extension.cache == 'y') {
 				      runtimeOnly 'org.springframework.data:spring-data-redis'
@@ -125,10 +134,29 @@ class roapp implements Plugin<Project> {
 					  runtimeOnly "io.grpc:grpc-netty-shaded:${protocJavaVersion}"
 					}
 					
+					if(extension.persistence == 'springData') {
+					  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+					  props.setProperty("persistence", 'springData')
+					}
+					
+					if(extension.dataBase == 'mysql') {
+					  runtimeOnly 'mysql:mysql-connector-java'
+					  props.setProperty("dataBase", 'mysql')
+					}
+					
+					if(extension.dataBase == 'postgres') {
+					  runtimeOnly 'org.postgresql:postgresql'
+					  props.setProperty("dataBase", 'postgres')
+					}
+					
+					if(extension.logging == 'y') {
+					  implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+					  props.setProperty("log.enabled", 'y')
+					}
+					
 					//Writing project infos
-	                def propertyFile = file("src/main/resources/projectInfo.properties")
                     props.setProperty("version", project.version)
-					props.store propertyFile.newWriter(), null
+					props.store propertyFile.newWriter(), "DO NOT MODIFY THIS FILE"
 	            }
 	            
 	            
@@ -149,7 +177,7 @@ class roapp implements Plugin<Project> {
 				        }
 				     }
 				     if(project.appConfig.persistence) {
-				       if(project.appConfig.persistence != "jpa" && project.appConfig.persistence != "hibernate"){
+				       if(project.appConfig.persistence != "springData" && project.appConfig.persistence != "jpa" && project.appConfig.persistence != "hibernate"){
 				            throw new GradleException('Unsupported persistence layer '+project.appConfig.persistence+". Supports only jpa and hibernate.")
 				        }
 				     }
@@ -238,7 +266,13 @@ subprojects {
   sourceCompatibility = '1.8'
   targetCompatibility = '1.8'
  
-  dependencyManagement {
+ configurations {
+    all {
+          exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+      }
+ }
+ 
+ dependencyManagement {
     imports {
       mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE")
     }

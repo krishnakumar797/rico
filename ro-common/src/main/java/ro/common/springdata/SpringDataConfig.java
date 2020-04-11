@@ -1,21 +1,20 @@
 /* Licensed under Apache-2.0 */
 package ro.common.springdata;
 
-import com.zaxxer.hikari.HikariDataSource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * JPA configuration params
@@ -23,12 +22,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author r.krishnakumar
  */
 @Configuration
-@EnableJpaRepositories
 @EnableTransactionManagement
+@DependsOn("log")
 public class SpringDataConfig {
 
-  @Value("${ro.db.hosts}")
-  private List<String> host;
+  @Value("${ro.db.host}")
+  private String host;
 
   @Value("${ro.db.database}")
   private String databaseName;
@@ -38,6 +37,11 @@ public class SpringDataConfig {
 
   @Value("${ro.db.password}")
   private String password;
+  
+  @Value("${ro.db.entity.package}")
+  private String entityPackageName;
+
+  @Autowired private String dataBaseName;
 
   /**
    * Datasource with connection pooling
@@ -50,22 +54,14 @@ public class SpringDataConfig {
     if (host == null || host.isEmpty()) {
       throw new RuntimeException("No host configured for the database");
     }
-
-    Properties prop = new Properties();
-    String file = "projectInfo.properties";
-    try (HikariDataSource ds = new HikariDataSource();
-        InputStream fins = getClass().getClassLoader().getResourceAsStream(file)) {
-      if (fins == null) {
-        throw new RuntimeException("Project info file not found");
-      }
-      prop.load(fins);
-      String hostName = host.get(0);
-      String dataBaseName = prop.getProperty("database");
+    try {
+      HikariDataSource ds = new HikariDataSource();
       if (dataBaseName.equals("mysql")) {
         ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        ds.setJdbcUrl("jdbc:mysql://" + hostName + ":3306/" + databaseName);
+        ds.setJdbcUrl("jdbc:mysql://" + host + ":3306/" + databaseName);
       } else if (dataBaseName.equals("postgres")) {
-
+        ds.setDriverClassName("org.postgresql.Driver");
+        ds.setJdbcUrl("jdbc:postgresql://" + host + ":5432/" + databaseName);
       }
       ds.addDataSourceProperty("useSSL", false);
       ds.setMaximumPoolSize(12);
@@ -76,8 +72,6 @@ public class SpringDataConfig {
       ds.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
       ds.addDataSourceProperty("useServerPrepStmts", true);
       return ds;
-    } catch (IOException e) {
-      throw new RuntimeException("Project info file not found");
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialise datasource");
     }
@@ -90,8 +84,9 @@ public class SpringDataConfig {
     vendorAdapter.setGenerateDdl(true);
     LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
     factory.setJpaVendorAdapter(vendorAdapter);
-    factory.setPackagesToScan("com.acme.domain");
     factory.setDataSource(dataSource());
+    factory.setPackagesToScan(entityPackageName);
+    factory.setPersistenceUnitName("ricoPersistence");
     return factory;
   }
 

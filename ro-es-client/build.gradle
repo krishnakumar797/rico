@@ -1,5 +1,6 @@
 appConfig {
   search = 'y'
+  logging = 'y'
   javaMainClass = "com.rico.es.ESClientApplication"
 }
 

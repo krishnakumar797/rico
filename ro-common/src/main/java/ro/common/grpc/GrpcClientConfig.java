@@ -12,6 +12,7 @@ import net.devh.boot.grpc.client.config.NegotiationType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 /**
  * Configuration class only for GRPC Client
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @EqualsAndHashCode(callSuper = true)
 @Configuration
+@DependsOn("log")
 public class GrpcClientConfig extends GrpcChannelsProperties {
 
   @Value("#{${ro.grpc.client.targets}}")

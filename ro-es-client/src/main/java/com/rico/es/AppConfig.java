@@ -3,7 +3,10 @@ package com.rico.es;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import ro.common.config.CommonConfig;
 import ro.common.elasticsearch.ElasticSearchConfig;
+import ro.common.logging.Log4j2Config;
 
 /**
  * Configuration manager to add configurations for external systems. Multiple configuration class
@@ -12,5 +15,5 @@ import ro.common.elasticsearch.ElasticSearchConfig;
  * @author r.krishnakumar
  */
 @Configuration
-@Import({ElasticSearchConfig.class})
+@Import({CommonConfig.class, Log4j2Config.class, ElasticSearchConfig.class})
 public class AppConfig {}

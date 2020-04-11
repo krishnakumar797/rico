@@ -1,10 +1,14 @@
 /* Licensed under Apache-2.0 */
 package com.rico.grpc.client;
 
-import com.rico.grpc.client.services.GrpcClientService;
 import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.rico.grpc.client.services.GrpcClientService;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Testing Grpc client service
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Component;
  * @author r.krishnakumar
  */
 @Component
+@Log4j2
 public class TestGrpcClient {
 
   @Autowired private GrpcClientService clientService;
@@ -19,6 +24,6 @@ public class TestGrpcClient {
   @PostConstruct
   public void sendGreeting() {
     String greeting = clientService.receiveGreeting("Rico..!!");
-    System.out.println("GREETINGS " + greeting);
+    log.info("GREETINGS " + greeting);
   }
 }

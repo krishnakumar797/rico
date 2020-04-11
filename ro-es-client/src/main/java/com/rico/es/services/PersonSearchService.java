@@ -2,6 +2,9 @@
 package com.rico.es.services;
 
 import com.rico.es.documents.Person;
+
+import lombok.extern.log4j.Log4j2;
+
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -16,6 +19,7 @@ import ro.common.elasticsearch.CommonSearchRepository;
  * @author r.krishnakumar
  */
 @Service
+@Log4j2
 public class PersonSearchService extends CommonSearchRepository<Person> {
 
   /**
@@ -26,7 +30,7 @@ public class PersonSearchService extends CommonSearchRepository<Person> {
    */
   public String savePerson(Person p) {
     String id = save(p);
-    System.out.println("SAVED PERSON SUCCESSFULLY " + id);
+    log.info("SAVED PERSON SUCCESSFULLY " + id);
     return id;
   }
 
@@ -37,8 +41,7 @@ public class PersonSearchService extends CommonSearchRepository<Person> {
    */
   public void getPersonById(String id) {
     Person person = findById(id, Person.class);
-    System.out.println(
-        "SUCCESSFULLY RETRIEVED " + person.getFirstname() + "  " + person.getLastname());
+    log.info("SUCCESSFULLY RETRIEVED " + person.getFirstname() + "  " + person.getLastname());
   }
 
   /**
@@ -49,7 +52,7 @@ public class PersonSearchService extends CommonSearchRepository<Person> {
   public void findByCriteriaQuery(String fieldValue, String fieldName) {
     CriteriaQuery cq = new CriteriaQuery(Criteria.where(fieldName).contains(fieldValue));
     Person p = queryForObject(cq, Person.class);
-    System.out.println("SUCCESSFULLY RETRIEVED " + p.getFirstname() + "  " + p.getLastname());
+    log.info("SUCCESSFULLY RETRIEVED " + p.getFirstname() + "  " + p.getLastname());
   }
 
   /**
@@ -66,6 +69,6 @@ public class PersonSearchService extends CommonSearchRepository<Person> {
     if (p == null) {
       return;
     }
-    System.out.println("SUCCESSFULLY RETRIEVED " + p.getFirstname());
+    log.info("SUCCESSFULLY RETRIEVED " + p.getFirstname());
   }
 }

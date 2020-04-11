@@ -1,8 +1,11 @@
 /* Licensed under Apache-2.0 */
 package com.rico.kafka.services;
 
-import com.rico.kafka.utils.QueueTopics;
 import org.springframework.stereotype.Service;
+
+import com.rico.kafka.utils.QueueTopics;
+
+import lombok.extern.log4j.Log4j2;
 import ro.common.exception.DataParsingException;
 import ro.common.kafka.CommonQueuePublisher;
 import ro.common.kafka.MessageWrapper;
@@ -13,6 +16,7 @@ import ro.common.kafka.MessageWrapper;
  * @author r.krishnakumar
  */
 @Service
+@Log4j2
 public class QueueServicePublisher extends CommonQueuePublisher {
 
   /**
@@ -24,7 +28,7 @@ public class QueueServicePublisher extends CommonQueuePublisher {
    * @throws DataParsingException
    */
   public void publisher(QueueTopics topic, Long id, Object obj) throws DataParsingException {
-    System.out.println("Data is going to publish for the topic " + topic.name());
+    log.info("Data is going to publish for the topic " + topic.name());
     MessageWrapper wrapper = getMessageWrapper();
     wrapper.setData(obj);
     wrapper.setId(id);
@@ -32,8 +36,7 @@ public class QueueServicePublisher extends CommonQueuePublisher {
         topic.toString(),
         wrapper,
         (to, wra) -> {
-          System.out.println(
-              "Ack on successful publish: Published values are - " + to + " " + wra.getId());
+          log.info("Ack on successful publish: Published values are - " + to + " " + wra.getId());
         },
         (to, wra, ex) -> {
           // To-do handle exceptions on failures

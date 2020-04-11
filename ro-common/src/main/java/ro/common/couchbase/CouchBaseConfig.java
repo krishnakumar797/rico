@@ -6,8 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
 import org.springframework.data.couchbase.repository.support.IndexManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.couchbase.client.java.env.CouchbaseEnvironment;
 import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
@@ -18,6 +20,7 @@ import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
  * @author r.krishnakumar
  */
 @Configuration
+@DependsOn("log")
 public class CouchBaseConfig extends AbstractCouchbaseConfiguration {
 
   @Value("${ro.db.hosts}")
@@ -37,7 +40,7 @@ public class CouchBaseConfig extends AbstractCouchbaseConfiguration {
     return host;
   }
 
-  @Bean
+  @Bean("bucketName")
   @Override
   public String getBucketName() {
     return bucketName;

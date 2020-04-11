@@ -3,6 +3,9 @@ package com.rico.redis;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import ro.common.config.CommonConfig;
+import ro.common.logging.Log4j2Config;
 import ro.common.redis.RedisConfig;
 
 /**
@@ -12,5 +15,5 @@ import ro.common.redis.RedisConfig;
  * @author r.krishnakumar
  */
 @Configuration
-@Import({RedisConfig.class})
+@Import({CommonConfig.class, Log4j2Config.class, RedisConfig.class})
 public class AppConfig {}

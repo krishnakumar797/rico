@@ -21,6 +21,7 @@ import org.nustaq.serialization.FSTConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -35,6 +36,7 @@ import ro.common.exception.QueueInitException;
  * @author r.krishnakumar
  */
 @Configuration
+@DependsOn("log")
 public class KafkaConfig {
 
   @Value("${ro.queue.hosts}")
@@ -43,13 +45,13 @@ public class KafkaConfig {
   @Value("${ro.queue.topics.auto.create}")
   private boolean createTopics;
 
-  @Value("${ro.queue.consumer.name: false}")
+  @Value("${ro.queue.consumer.name:false}")
   private String consumerName;
 
-  @Value("${ro.queue.consumer.group.name: false}")
+  @Value("${ro.queue.consumer.group.name:false}")
   private String consumerGroupName;
 
-  @Value("${ro.queue.consumer.concurrency: 2}")
+  @Value("${ro.queue.consumer.concurrency:2}")
   private Integer concurrencyCount;
 
   @Value("#{'${ro.queue.topics}'.split(',')}")

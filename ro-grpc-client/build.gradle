@@ -1,5 +1,6 @@
 appConfig {
   grpcClient = 'y'
+  logging = 'y'
   javaMainClass = "com.rico.grpc.client.GrpcClientApplication"
 }
 

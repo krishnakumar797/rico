@@ -1,13 +1,16 @@
 /* Licensed under Apache-2.0 */
 package com.rico.couchbase.repository;
 
-import com.rico.couchbase.documents.User;
 import java.util.List;
+
 import org.springframework.data.couchbase.core.query.N1qlSecondaryIndexed;
 import org.springframework.data.couchbase.core.query.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+
+import com.rico.couchbase.documents.User;
+
 import ro.common.couchbase.CommonCBRepository;
 
 /**
@@ -15,7 +18,7 @@ import ro.common.couchbase.CommonCBRepository;
  *
  * @author r.krishnakumar
  */
-@Service
+@Repository
 @N1qlSecondaryIndexed(indexName = "user")
 public interface UserRepository extends CommonCBRepository<User> {
 
@@ -30,8 +33,8 @@ public interface UserRepository extends CommonCBRepository<User> {
    * #{#n1ql.selectEntity}: syntax-sugar to SELECT * FROM #(#n1ql.bucket):
    *
    * <p>#{#n1ql.filter}: syntax-sugar to filter the document by type, technically it means class =
-   * �myPackage.MyClassName� (_class is the attribute automatically added in the document to define
-   * its type when you are working with Couchbase on Spring Data )
+   * �myPackage.MyClassName� (_class is the attribute automatically added in the document to
+   * define its type when you are working with Couchbase on Spring Data )
    *
    * <p>#{#n1ql.fields} will be replaced by the list of fields (eg. for a SELECT clause) necessary
    * to reconstruct the entity.

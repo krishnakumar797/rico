@@ -1,6 +1,17 @@
 /* Licensed under Apache-2.0 */
 package com.rico.couchbase.services;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.couchbase.client.core.message.kv.subdoc.multi.Lookup;
 import com.couchbase.client.core.message.kv.subdoc.multi.Mutation;
 import com.couchbase.client.java.document.json.JsonObject;
@@ -14,16 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rico.couchbase.documents.Address;
 import com.rico.couchbase.documents.User;
 import com.rico.couchbase.repository.UserRepository;
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Sample Service for Couchbase user document
@@ -31,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author r.krishnakumar
  */
 @Service
-@Transactional
 public class UserService {
 
   @Autowired private UserRepository userRepository;
@@ -180,5 +180,15 @@ public class UserService {
    */
   public User saveUser(User u) {
     return userRepository.save(u);
+  }
+
+  /**
+   * Sample service method to delete user document
+   *
+   * @param u
+   * @return
+   */
+  public void deleteUser(User u) {
+    userRepository.delete(u);
   }
 }

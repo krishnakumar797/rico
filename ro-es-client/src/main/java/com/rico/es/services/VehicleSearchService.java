@@ -1,8 +1,8 @@
 /* Licensed under Apache-2.0 */
 package com.rico.es.services;
 
-import com.rico.es.documents.Vehicle;
 import java.util.List;
+
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -10,6 +10,10 @@ import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
+
+import com.rico.es.documents.Vehicle;
+
+import lombok.extern.log4j.Log4j2;
 import ro.common.elasticsearch.CommonSearchRepository;
 
 /**
@@ -18,6 +22,7 @@ import ro.common.elasticsearch.CommonSearchRepository;
  * @author r.krishnakumar
  */
 @Service
+@Log4j2
 public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
 
   /**
@@ -28,7 +33,7 @@ public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
    */
   public String saveVehicle(Vehicle p) {
     String id = save(p);
-    System.out.println("SAVED VEHICLE SUCCESSFULLY " + id);
+    log.info("SAVED VEHICLE SUCCESSFULLY " + id);
     return id;
   }
 
@@ -39,7 +44,7 @@ public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
    */
   public void getVehicleById(String id) {
     Vehicle v = findById(id, Vehicle.class);
-    System.out.println("SUCCESSFULLY RETRIEVED " + v.getId());
+    log.info("SUCCESSFULLY RETRIEVED " + v.getId());
   }
 
   /**
@@ -56,12 +61,12 @@ public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
                 .and(Criteria.where(fieldName).contains(fieldValue)));
     List<Vehicle> v = queryForList(cq, Vehicle.class, true);
     if (v == null || v.isEmpty()) {
-      System.out.println("NO RESULTS FOUND");
+      log.info("NO RESULTS FOUND");
       return;
     }
     v.forEach(
         vl -> {
-          System.out.println("SUCCESSFULLY RETRIEVED " + vl.getModel());
+          log.info("SUCCESSFULLY RETRIEVED " + vl.getModel());
         });
   }
 
@@ -94,13 +99,12 @@ public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
     StringQuery sq = new StringQuery(boolQuery.toString());
     List<Vehicle> v = queryForList(sq, Vehicle.class, true);
     if (v == null || v.isEmpty()) {
-      System.out.println("NO RESULTS FOUND");
+      log.info("NO RESULTS FOUND");
       return;
     }
     v.forEach(
         vl -> {
-          System.out.println(
-              "SUCCESSFULLY RETRIEVED " + vl.getMake() + " " + vl.getManufacturingYear());
+          log.info("SUCCESSFULLY RETRIEVED " + vl.getMake() + " " + vl.getManufacturingYear());
         });
   }
 }

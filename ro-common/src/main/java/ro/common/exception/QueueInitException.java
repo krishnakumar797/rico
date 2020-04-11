@@ -1,7 +1,11 @@
 /* Licensed under Apache-2.0 */
 package ro.common.exception;
 
-/** Custom exception for kafka queue init */
+/**
+ * Custom exception for kafka queue init
+ *
+ * @author r.krishnakumar
+ */
 public class QueueInitException extends RuntimeException {
 
   public QueueInitException(String message) {

@@ -1,13 +1,10 @@
 appConfig {
-  grpcClient = 'y'
-  search = 'y'
-  javaMainClass = "com.healtrip.client.HtClientApplication"
+  persistence = 'springData'
+  dataBase = 'mysql'
+  logging = 'y'
+  javaMainClass = "com.rico.springdata.SpringDataApplication"
 }
 
 dependencies {
     implementation project(':ro-common')
-	 
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
 }

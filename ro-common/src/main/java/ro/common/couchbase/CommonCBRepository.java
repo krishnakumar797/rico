@@ -7,6 +7,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.couchbase.repository.CouchbasePagingAndSortingRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.NoRepositoryBean;
 
 import com.couchbase.client.core.message.kv.subdoc.multi.Lookup;
 import com.couchbase.client.core.message.kv.subdoc.multi.Mutation;
@@ -19,17 +20,18 @@ import com.couchbase.client.java.subdoc.DocumentFragment;
 import ro.common.utils.Doc;
 
 /**
- * Genric Commmon DAO spring data repository
+ * Generic Common DAO spring data repository for Couchbase
  *
  * @author r.krishnakumar
  * @param <T>
  * @param <String>
  */
 @DependsOn("CouchBaseConfig")
+@NoRepositoryBean
 public interface CommonCBRepository<T extends Doc>
     extends CouchbasePagingAndSortingRepository<T, String> {
 
-  <S extends T> S save(S entity);
+ <S extends T> S save(S entity);
 
   Optional<T> findById(String primaryKey);
 

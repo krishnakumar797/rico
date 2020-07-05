@@ -33,6 +33,9 @@ public class Log4j2Config {
   @Value("#{${ro.logging.appPackages:{'': 'INFO'}}}")
   private Map<String, String> appPackages;
 
+  @Value("${ro.logging.supressStackTrace:false}")
+  private boolean supressStackTrace;
+
   @Value("${ro.logging.rootLogger:false}")
   private boolean rootLogger;
 
@@ -105,13 +108,22 @@ public class Log4j2Config {
     // Log level for the internal log4j2 events
     builder.setStatusLevel(Level.ERROR);
 
-    LayoutComponentBuilder layoutBuilder =
-        builder
-            .newLayout("PatternLayout")
-            .addAttribute(
-                "pattern",
-                "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr{%-5level} %clr{%pid} %clr{---} %clr{[%15.15t]} %clr{%-40.40c{-1}} %clr{:} %msg%throwable{short.message}%n");
-
+    LayoutComponentBuilder layoutBuilder = null;
+    if (supressStackTrace) {
+      layoutBuilder =
+          builder
+              .newLayout("PatternLayout")
+              .addAttribute(
+                  "pattern",
+                  "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr{%-5level} %clr{%pid} %clr{---} %clr{[%15.15t]} %clr{%-40.40c{-1}} %clr{:} %msg%throwable{short.message}%n");
+    } else {
+      layoutBuilder =
+          builder
+              .newLayout("PatternLayout")
+              .addAttribute(
+                  "pattern",
+                  "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr{%-5level} %clr{%pid} %clr{---} %clr{[%15.15t]} %clr{%-40.40c{-1}} %clr{:} %msg%throwable%n");
+    }
     AppenderComponentBuilder appenderBuilder = null;
 
     switch (Utils.LOG_APPENDERS.value(appender)) {
@@ -167,7 +179,7 @@ public class Log4j2Config {
       case CONSOLE:
         // Console logger
         configuration.getAppender(CONSOLE_APPENDER_NAME).start();
-        //Check if the rootLogger is enabled
+        // Check if the rootLogger is enabled
         if (rootLogger) {
           ctx.getConfiguration().getRootLogger().removeAppender("Console");
           ctx.getConfiguration()
@@ -179,7 +191,7 @@ public class Log4j2Config {
       case FILE:
         // Rolling file logger
         configuration.getAppender(ROLLINGFILE_APPENDER_NAME).start();
-        //Check if the rootLogger is enabled
+        // Check if the rootLogger is enabled
         if (rootLogger) {
           ctx.getConfiguration().getRootLogger().removeAppender("Console");
           ctx.getConfiguration()

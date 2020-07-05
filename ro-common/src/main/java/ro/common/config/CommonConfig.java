@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 
+import ro.common.hazelcast.HazelcastConfig;
 import ro.common.logging.Log4j2Config;
 
 /**
@@ -28,7 +29,7 @@ public class CommonConfig implements ApplicationContextAware {
   private ApplicationContext applicationContext;
 
   @Value("${database:''}")
-  private String dataBaseName;
+  private String dataBaseType;
 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -45,9 +46,9 @@ public class CommonConfig implements ApplicationContextAware {
     }
   }
 
-  @Bean("dataBaseName")
-  public String getDatabaseName() {
-    return dataBaseName;
+  @Bean("dataBaseType")
+  public String getDatabaseType() {
+    return dataBaseType;
   }
 
   @Bean("log")
@@ -60,6 +61,19 @@ public class CommonConfig implements ApplicationContextAware {
   @Bean("log")
   @ConditionalOnProperty(name = "log.enabled", havingValue = "y", matchIfMissing = true)
   public boolean isLoggingNotEnabled() {
+    return true;
+  }
+  
+  @Bean("cache")
+  @ConditionalOnProperty(name = "cache.enabled", havingValue = "y")
+  public boolean isCacheEnabled() {
+    applicationContext.getBean("cacheManager");
+    return true;
+  }
+
+  @Bean("cache")
+  @ConditionalOnProperty(name = "cache.enabled", havingValue = "y", matchIfMissing = true)
+  public boolean isCacheNotEnabled() {
     return true;
   }
 }

@@ -1,6 +1,9 @@
 /* Licensed under Apache-2.0 */
 package ro.common.springdata;
 
+import java.util.Optional;
+import java.util.Properties;
+
 import javax.persistence.EntityManagerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +11,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.zaxxer.hikari.HikariDataSource;
+
+import ro.common.utils.Utils;
 
 /**
  * JPA configuration params
@@ -23,7 +32,8 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 @Configuration
 @EnableTransactionManagement
-@DependsOn("log")
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+@DependsOn({"log", "cache"})
 public class SpringDataConfig {
 
   @Value("${ro.db.host}")
@@ -37,11 +47,14 @@ public class SpringDataConfig {
 
   @Value("${ro.db.password}")
   private String password;
-  
+
   @Value("${ro.db.entity.package}")
   private String entityPackageName;
 
-  @Autowired private String dataBaseName;
+  @Value("${ro.db.showSQL:false}")
+  private boolean showSQL;
+
+  @Autowired private String dataBaseType;
 
   /**
    * Datasource with connection pooling
@@ -51,15 +64,24 @@ public class SpringDataConfig {
   @Bean
   public HikariDataSource dataSource() {
 
-    if (host == null || host.isEmpty()) {
-      throw new RuntimeException("No host configured for the database");
+    if (Utils.propertyHasTrailingSpaces(host)) {
+      throw new RuntimeException("DB Host value has trailing white space");
+    }
+    if (Utils.propertyHasTrailingSpaces(userName)) {
+      throw new RuntimeException("DB Username value has trailing white space");
+    }
+    if (Utils.propertyHasTrailingSpaces(password)) {
+      throw new RuntimeException("DB password value has trailing white space");
+    }
+    if (Utils.propertyHasTrailingSpaces(entityPackageName)) {
+      throw new RuntimeException("Entity Package Name value has trailing white space");
     }
     try {
       HikariDataSource ds = new HikariDataSource();
-      if (dataBaseName.equals("mysql")) {
+      if (dataBaseType.equals("mysql")) {
         ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
         ds.setJdbcUrl("jdbc:mysql://" + host + ":3306/" + databaseName);
-      } else if (dataBaseName.equals("postgres")) {
+      } else if (dataBaseType.equals("postgres")) {
         ds.setDriverClassName("org.postgresql.Driver");
         ds.setJdbcUrl("jdbc:postgresql://" + host + ":5432/" + databaseName);
       }
@@ -80,9 +102,15 @@ public class SpringDataConfig {
   /** Entity manager factory bean creation */
   @Bean
   public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
     HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
     vendorAdapter.setGenerateDdl(true);
-    LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+    if (this.showSQL) {
+      vendorAdapter.setShowSql(true);
+      Properties jpaProperties = new Properties();
+      jpaProperties.put("hibernate.format_sql", true);
+      factory.setJpaProperties(jpaProperties);
+    }
     factory.setJpaVendorAdapter(vendorAdapter);
     factory.setDataSource(dataSource());
     factory.setPackagesToScan(entityPackageName);
@@ -96,5 +124,19 @@ public class SpringDataConfig {
     JpaTransactionManager txManager = new JpaTransactionManager();
     txManager.setEntityManagerFactory(entityManagerFactory);
     return txManager;
+  }
+
+  /**
+   * Auditor Provider bean
+   *
+   * @return
+   */
+  @Bean
+  public AuditorAware<String> auditorProvider() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null) {
+      return () -> Optional.ofNullable("unknown");
+    }
+    return () -> Optional.ofNullable(authentication.getName());
   }
 }

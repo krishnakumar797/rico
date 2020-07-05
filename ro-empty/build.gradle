@@ -1,0 +1,8 @@
+appConfig {
+  logging = 'y'
+  javaMainClass = "com.rico.empty.Application"
+}
+
+dependencies {
+    implementation project(':ro-common')
+}

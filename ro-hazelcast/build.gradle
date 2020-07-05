@@ -1,0 +1,11 @@
+appConfig {
+  persistence = 'hibernate'
+  dataBase = 'mysql'
+  cache = 'y'
+  logging = 'y'
+  javaMainClass = "com.rico.hibernate.HibernateApplication"
+}
+
+dependencies {
+    implementation project(':ro-common')
+}

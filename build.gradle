@@ -8,8 +8,8 @@ buildscript {
 plugins {
   id 'io.spring.dependency-management' version "1.0.8.RELEASE" apply false
   id 'org.springframework.boot' version '2.2.4.RELEASE' apply false
-  id "name.remal.sonarlint" version "1.0.178" apply false
-  id "io.freefair.lombok" version "5.0.0-rc6" apply false
+  id "name.remal.sonarlint" version "1.0.200" apply false
+  id "io.freefair.lombok" version "5.1.0" apply false
   id "com.diffplug.gradle.spotless" version "3.28.0" apply false
 }
 
@@ -17,6 +17,8 @@ ext {
   protobufVersion = "3.11.4"
   protocJavaVersion = "1.27.1"
   grpcVersion = "2.7.0.RELEASE"
+  springVersion = "5.2.3.RELEASE"
+  hazelcastVersion = "4.0.2"
 }
 
 //Compile only libraries for common application
@@ -24,6 +26,9 @@ project(':ro-common') {
   apply plugin: 'java-library'
     project.with {
             dependencies {
+                compileOnly "org.springframework.security:spring-security-web"
+                compileOnly "org.springframework.security:spring-security-config"
+                
 			    compileOnly 'org.springframework.data:spring-data-couchbase'
 			    compileOnly 'org.springframework.kafka:spring-kafka'
 			    
@@ -47,14 +52,20 @@ project(':ro-common') {
 			    compileOnly 'mysql:mysql-connector-java'
 			    compileOnly 'org.postgresql:postgresql'
 			    compileOnly 'com.zaxxer:HikariCP'
+			    
+			    compileOnly "com.hazelcast:hazelcast:${hazelcastVersion}"
+			    compileOnly "com.hazelcast:hazelcast-spring:${hazelcastVersion}"
             }
+            
          }
 }
 
 //Extension for configuring ro plugin
 class ROExtension {
+    String security
     String dataBase
     String persistence
+    String keyvaluestore
     String cache
     String queue
     String grpc
@@ -88,7 +99,9 @@ class roapp implements Plugin<Project> {
 	                testImplementation('org.springframework.boot:spring-boot-starter-test') {
 	                   exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	                }
-	                
+	                if(extension.security == 'y'){
+	                    implementation 'org.springframework.boot:spring-boot-starter-security'
+	                }
 	                if(extension.rest == 'y'){
 	                  implementation 'org.springframework.boot:spring-boot-starter-web'
 	                }
@@ -105,9 +118,14 @@ class roapp implements Plugin<Project> {
 				      implementation 'org.springframework.data:spring-data-couchbase'
 				       props.setProperty("database", 'couchbase')
 				    }
-				    if(extension.cache == 'y') {
+				    if(extension.keyvaluestore == 'y') {
 				      runtimeOnly 'org.springframework.data:spring-data-redis'
 				      runtimeOnly 'io.lettuce:lettuce-core'
+				    }
+				    if(extension.cache == 'y') {
+				      runtimeOnly "com.hazelcast:hazelcast:${hazelcastVersion}"
+			          runtimeOnly "com.hazelcast:hazelcast-spring:${hazelcastVersion}"
+			          props.setProperty("cache.enabled", 'y')
 				    }
 				    if(extension.queue == 'y') {				    
 					  implementation 'org.springframework.kafka:spring-kafka'
@@ -136,7 +154,23 @@ class roapp implements Plugin<Project> {
 					
 					if(extension.persistence == 'springData') {
 					  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+					  if(extension.security != 'y'){
+	                     runtimeOnly('org.springframework.boot:spring-boot-starter-security')
+	                   }
 					  props.setProperty("persistence", 'springData')
+					}
+					
+					if(extension.persistence == 'hibernate') {
+					  implementation "org.springframework:spring-tx:${springVersion}"
+					  runtimeOnly 'org.springframework.data:spring-data-jpa'
+					  runtimeOnly "org.springframework:spring-aspects:${springVersion}"
+					  runtimeOnly "org.springframework:spring-orm:${springVersion}"
+					  runtimeOnly 'org.hibernate:hibernate-core'
+					  runtimeOnly 'com.zaxxer:HikariCP'
+					  if(extension.security != 'y'){
+	                     runtimeOnly('org.springframework.boot:spring-boot-starter-security')
+	                   }
+					  props.setProperty("persistence", 'hibernate')
 					}
 					
 					if(extension.dataBase == 'mysql') {
@@ -177,16 +211,22 @@ class roapp implements Plugin<Project> {
 				        }
 				     }
 				     if(project.appConfig.persistence) {
-				       if(project.appConfig.persistence != "springData" && project.appConfig.persistence != "jpa" && project.appConfig.persistence != "hibernate"){
-				            throw new GradleException('Unsupported persistence layer '+project.appConfig.persistence+". Supports only jpa and hibernate.")
+				       if(project.appConfig.dataBase == "couchbase"){
+				           throw new GradleException('Spring data persistence is implicitly configured for '+project.appConfig.dataBase+". Remove any persistence layer already added.")
+				       }
+				       if(project.appConfig.persistence != "springData" && project.appConfig.persistence != "hibernate"){
+				            throw new GradleException('Unsupported persistence layer '+project.appConfig.persistence+". Supports only springData and hibernate.")
 				        }
 				     }
 				     String enabledServices=""
 				     if(project.appConfig.dataBase){
 				       enabledServices += project.appConfig.dataBase +" "
 				     }
-				     if(project.appConfig.cache){
+				     if(project.appConfig.keyvaluestore){
 				       enabledServices += "redis "
+				     }
+				     if(project.appConfig.cache){
+				       enabledServices += "hazelcast "
 				     }
 				     if(project.appConfig.search){
 				       enabledServices += "elastic-search "
@@ -254,6 +294,8 @@ subprojects {
       licenseHeader '/* Licensed under Apache-2.0 */'
     }
   }
+  
+  it.tasks.build.dependsOn it.tasks.spotlessApply
   
   //apply to all sub project except common
   if (!it.name.startsWith('ro-common')) {

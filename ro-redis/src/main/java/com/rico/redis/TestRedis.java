@@ -2,26 +2,31 @@
 package com.rico.redis;
 
 import com.rico.redis.documents.Test;
-import com.rico.redis.services.CacheService;
+import com.rico.redis.services.KeyValueStoreService;
+
+import lombok.extern.log4j.Log4j2;
+
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Testing Redis cache service
+ * Testing Redis Keyvalue store service
  *
  * @author r.krishnakumar
  */
 @Component
+@Log4j2
 public class TestRedis {
 
-  @Autowired private CacheService cacheService;
+  @Autowired private KeyValueStoreService keyValueStoreService;
 
   @PostConstruct
   public void saveUser() {
     Test t = new Test();
     t.setTestValue("myuser");
-    cacheService.setUser(t);
-    cacheService.getUser();
+    keyValueStoreService.setUser(t);
+    t = keyValueStoreService.getUser();
+    log.info("KEY VALUE STORE USER " + t.getTestValue());
   }
 }

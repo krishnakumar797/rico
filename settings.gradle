@@ -1,1 +1,1 @@
-include "ro-common", "ro-es-client", "ro-grpc-server", "ro-grpc-client", "ro-springdata-client", "ro-couchbase", "ro-redis", "ro-kafka"
+include "ro-common", "ro-es-client", "ro-grpc-server", "ro-grpc-client", "ro-springdata", "ro-couchbase", "ro-redis", "ro-kafka", "ro-hibernate", "ro-hazelcast"

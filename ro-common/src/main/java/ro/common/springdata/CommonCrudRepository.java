@@ -44,11 +44,11 @@ public interface CommonCrudRepository<T extends Doc, Long>
 
   boolean existsById(Long primaryKey);
 
-  @Query("select t from #{#entityName} t where t.createDateTime >= :createDateTime")
-  List<T> findAllByCreatedDate(@Param("createDateTime") LocalDateTime createDateTime);
+  @Query("select t from #{#entityName} t where t.createdDateTime >= :createdDateTime")
+  List<T> findAllByCreatedDate(@Param("createdDateTime") LocalDateTime createdDateTime);
 
-  @Query("select t from #{#entityName} t where t.modifyDateTime >= :modifyDateTime")
-  List<T> findAllByLastModifiedDate(@Param("modifyDateTime") LocalDateTime modifyDateTime);
+  @Query("select t from #{#entityName} t where t.lastModifiedDateTime >= :lastModifiedDateTime")
+  List<T> findAllByLastModifiedDate(@Param("lastModifiedDateTime") LocalDateTime lastModifiedDateTime);
 
   @Modifying
   @Query("delete from #{#entityName} t where t.id = ?1")

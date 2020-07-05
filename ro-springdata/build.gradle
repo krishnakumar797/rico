@@ -1,0 +1,10 @@
+appConfig {
+  persistence = 'springData'
+  dataBase = 'postgres'
+  logging = 'y'
+  javaMainClass = "com.rico.springdata.SpringDataApplication"
+}
+
+dependencies {
+    implementation project(':ro-common')
+}

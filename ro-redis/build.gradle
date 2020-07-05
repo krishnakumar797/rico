@@ -1,5 +1,5 @@
 appConfig {
-  cache = 'y'
+  keyvaluestore = 'y'
   logging = 'y'
   javaMainClass = "com.rico.redis.RedisApplication"
 }

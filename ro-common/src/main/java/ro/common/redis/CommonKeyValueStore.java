@@ -16,7 +16,7 @@ import ro.common.utils.Doc;
  * @param <T>
  */
 @DependsOn("RedisConfig")
-public abstract class CommonCache<T extends Doc> {
+public abstract class CommonKeyValueStore<T extends Doc> {
 
   @Resource(name = "redisTemplate")
   private HashOperations<String, byte[], byte[]> hashOperations;

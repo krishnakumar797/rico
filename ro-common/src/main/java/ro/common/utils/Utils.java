@@ -11,7 +11,7 @@ import java.util.Map;
 public class Utils {
 
   /** Enum for Log levels */
-  public static enum LOG_LEVELS {
+  public enum LOG_LEVELS {
     TRACE("TRACE"),
     DEBUG("DEBUG"),
     INFO("INFO"),
@@ -39,7 +39,7 @@ public class Utils {
   }
 
   /** Enum for log appenders */
-  public static enum LOG_APPENDERS {
+  public enum LOG_APPENDERS {
     CONSOLE("CONSOLE"),
     FILE("FILE");
 
@@ -60,5 +60,12 @@ public class Utils {
     public static LOG_APPENDERS value(String label) {
       return BY_LABEL.get(label);
     }
+  }
+
+  public static String dataBaseType;
+
+  public static boolean propertyHasTrailingSpaces(String property) {
+    Character lastCharacter = property.charAt(property.length() - 1);
+    return Character.isWhitespace(lastCharacter);
   }
 }

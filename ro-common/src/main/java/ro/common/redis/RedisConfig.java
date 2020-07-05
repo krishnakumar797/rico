@@ -1,16 +1,23 @@
 /* Licensed under Apache-2.0 */
 package ro.common.redis;
 
-import io.lettuce.core.ReadFrom;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import io.lettuce.core.ReadFrom;
 
 /**
  * Default configuration class for Redis
@@ -19,15 +26,20 @@ import org.springframework.data.redis.core.RedisTemplate;
  */
 @Configuration
 @DependsOn("log")
+@EnableAutoConfiguration(
+    exclude = {RedisAutoConfiguration.class, RedisRepositoriesAutoConfiguration.class})
 public class RedisConfig {
 
-  @Value("${ro.cache.host}")
-  private String hostName;
+  @Value("#{${ro.keyvaluestore.hosts}}")
+  private Map<String, Integer> hosts;
 
-  @Value("${ro.cache.port: 6379}")
-  private Integer port;
+  @Value("${ro.keyvaluestore.standalone}")
+  private boolean standalone;
 
-  @Value("${ro.cache.password: ''}")
+  @Value("${ro.keyvaluestore.master: 'mymaster'}")
+  private String master;
+
+  @Value("${ro.keyvaluestore.password: ''}")
   private String password;
 
   /**
@@ -39,12 +51,31 @@ public class RedisConfig {
   public LettuceConnectionFactory redisConnectionFactory() {
     LettuceClientConfiguration clientConfig =
         LettuceClientConfiguration.builder().readFrom(ReadFrom.REPLICA_PREFERRED).build();
-    RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration(hostName);
-    serverConfig.setPort(port);
-    if (!password.isEmpty()) {
-      serverConfig.setPassword(password);
+    if (hosts.isEmpty()) {
+      throw new RuntimeException("Invalid host config for KeyValueStore");
     }
-    return new LettuceConnectionFactory(serverConfig, clientConfig);
+    if (standalone) {
+      if (hosts.size() != 1) {
+        throw new RuntimeException("Invalid host config for KeyValueStore standalone server");
+      }
+      RedisStandaloneConfiguration serverConfig =
+          new RedisStandaloneConfiguration(hosts.keySet().iterator().next());
+      serverConfig.setPort(hosts.values().iterator().next());
+      if (!password.isEmpty()) {
+        serverConfig.setPassword(password);
+      }
+      return new LettuceConnectionFactory(serverConfig, clientConfig);
+    }
+    // Redis sentinal config
+    RedisSentinelConfiguration sentinelConfig = new RedisSentinelConfiguration().master(master);
+    hosts
+        .entrySet()
+        .forEach(
+            entry -> sentinelConfig.sentinel(entry.getKey(), Integer.valueOf(entry.getValue())));
+    if (!password.isEmpty()) {
+      sentinelConfig.setPassword(password);
+    }
+    return new LettuceConnectionFactory(sentinelConfig, clientConfig);
   }
 
   /**

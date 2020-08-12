@@ -1,8 +1,8 @@
 /* Licensed under Apache-2.0 */
-package com.rico.springdata.repository;
+package com.rico.rest.repository;
 
-import com.rico.springdata.domain.NamesOnly;
-import com.rico.springdata.entity.Person;
+import com.rico.rest.domain.NamesOnly;
+import com.rico.rest.entity.Person;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

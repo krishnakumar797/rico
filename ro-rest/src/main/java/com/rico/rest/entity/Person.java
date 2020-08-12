@@ -1,5 +1,5 @@
 /* Licensed under Apache-2.0 */
-package com.rico.springdata.entity;
+package com.rico.rest.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

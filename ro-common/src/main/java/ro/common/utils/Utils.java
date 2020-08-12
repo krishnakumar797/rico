@@ -68,4 +68,6 @@ public class Utils {
     Character lastCharacter = property.charAt(property.length() - 1);
     return Character.isWhitespace(lastCharacter);
   }
+  
+  public static final String CORRELATION_ID = "correlation-id";
 }

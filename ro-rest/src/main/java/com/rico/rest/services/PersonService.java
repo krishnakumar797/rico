@@ -1,10 +1,13 @@
 /* Licensed under Apache-2.0 */
-package com.rico.springdata.services;
+package com.rico.rest.services;
 
+import com.rico.rest.domain.NamesOnly;
+import com.rico.rest.entity.Person;
+import com.rico.rest.repository.PersonRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,12 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.rico.springdata.domain.NamesOnly;
-import com.rico.springdata.entity.Person;
-import com.rico.springdata.repository.PersonRepository;
-
-import lombok.extern.log4j.Log4j2;
 import ro.common.exception.GenericServiceException;
 
 /**

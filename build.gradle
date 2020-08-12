@@ -19,6 +19,8 @@ ext {
   grpcVersion = "2.7.0.RELEASE"
   springVersion = "5.2.3.RELEASE"
   hazelcastVersion = "4.0.2"
+  servletApiVersin = "2.5"
+  modelMapperVersion = "2.3.5"
 }
 
 //Compile only libraries for common application
@@ -55,6 +57,13 @@ project(':ro-common') {
 			    
 			    compileOnly "com.hazelcast:hazelcast:${hazelcastVersion}"
 			    compileOnly "com.hazelcast:hazelcast-spring:${hazelcastVersion}"
+			    
+			    compileOnly 'org.springframework.boot:spring-boot-autoconfigure'
+			    compileOnly 'org.springframework.boot:spring-boot-actuator-autoconfigure'
+			    compileOnly "org.modelmapper:modelmapper:${modelMapperVersion}"
+			    compileOnly 'org.springframework:spring-webmvc'
+			    compileOnly 'jakarta.validation:jakarta.validation-api'
+			    compileOnly "javax.servlet:servlet-api:${servletApiVersin}"
             }
             
          }
@@ -74,6 +83,8 @@ class ROExtension {
     String rest
     String search
     String logging
+    String monitoring
+    String devTools
     String javaMainClass
 }
 
@@ -102,8 +113,20 @@ class roapp implements Plugin<Project> {
 	                if(extension.security == 'y'){
 	                    implementation 'org.springframework.boot:spring-boot-starter-security'
 	                }
+	                if(extension.monitoring == 'y'){
+	                    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	                }
+	                if(extension.devTools == 'y'){
+	                    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	                }
 	                if(extension.rest == 'y'){
+	                  compileOnly 'jakarta.validation:jakarta.validation-api'
+	                  runtimeOnly "org.modelmapper:modelmapper:${modelMapperVersion}"
 	                  implementation 'org.springframework.boot:spring-boot-starter-web'
+	                  props.setProperty('spring.mvc.throw-exception-if-no-handler-found', 'true')
+	                  if(extension.security != 'y'){
+	                     props.setProperty("spring.autoconfigure.exclude", 'org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration')
+	                  }
 	                }
 	                if(extension.search == 'y'){
 	                  implementation 'org.springframework.data:spring-data-elasticsearch'
@@ -202,6 +225,7 @@ class roapp implements Plugin<Project> {
 				
 				buildApp.configure {
 				 doFirst {
+				     
 				     if(!project.appConfig.javaMainClass) {
 				        throw new GradleException('No Java Main class is configured for the application')
 				     }
@@ -221,6 +245,15 @@ class roapp implements Plugin<Project> {
 				     String enabledServices=""
 				     if(project.appConfig.dataBase){
 				       enabledServices += project.appConfig.dataBase +" "
+				     }
+				     if(project.appConfig.rest){
+				       enabledServices += "rest "
+				     }
+				     if(project.appConfig.persistence){
+				       enabledServices += project.appConfig.persistence +" "
+				     }
+				     if(project.appConfig.logging){
+				       enabledServices += "logging "
 				     }
 				     if(project.appConfig.keyvaluestore){
 				       enabledServices += "redis "
@@ -245,17 +278,15 @@ class roapp implements Plugin<Project> {
 				     }
 				     println "Enabled services are : ${enabledServices}"
 				  }
-				  dependsOn build
+				 dependsOn build
 				}
 				
 				//Defining custom run task
-				def runApp = tasks.register("run-${project.name}", JavaExec) {
+				def runApp = tasks.register("run-${project.name}") {
 				    group = 'ro'
 				    description = 'Run application'
 				    dependsOn buildApp
-				    classpath = sourceSets.main.runtimeClasspath
-			        main = project.appConfig.javaMainClass
-			        ignoreExitValue = true
+				    finalizedBy bootRun
 				}
 	         }
          } 
@@ -311,6 +342,10 @@ subprojects {
  configurations {
     all {
           exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+      }
+      developmentOnly
+      runtimeClasspath {
+          extendsFrom developmentOnly
       }
  }
  

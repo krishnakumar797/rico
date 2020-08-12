@@ -1,6 +1,6 @@
 appConfig {
   persistence = 'springData'
-  dataBase = 'postgres'
+  dataBase = 'mysql'
   logging = 'y'
   javaMainClass = "com.rico.springdata.SpringDataApplication"
 }

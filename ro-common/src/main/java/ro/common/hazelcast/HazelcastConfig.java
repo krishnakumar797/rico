@@ -2,6 +2,7 @@
 package ro.common.hazelcast;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
@@ -31,8 +32,9 @@ public class HazelcastConfig {
   @Value("${ro.cache.cluster.name}")
   private String clusterName;
 
-  //  @Value("#{${ro.cache.names}}")
-  //  private Map<String, Integer> cacheNames;
+  // for predefined cachenames
+  @Value("#{${ro.cache.names:{null}}")
+  private Optional<Map<String, Integer>> cacheNames;
 
   /**
    * Hazelcast config
@@ -64,21 +66,24 @@ public class HazelcastConfig {
     return new HazelcastCacheManager(hazelcastInstance);
   }
 
-  //  /**
-  //   * Cache customizer
-  //   *
-  //   * @return
-  //   */
-  //  @Bean
-  //  public CacheManagerCustomizer<HazelcastCacheManager> cacheManagerCustomizer() {
-  //    return new CacheManagerCustomizer<HazelcastCacheManager>() {
-  //      @Override
-  //      public void customize(HazelcastCacheManager cacheManager) {
-  //        StringBuffer sb = new StringBuffer();
-  //        cacheNames
-  //            .entrySet()
-  //            .forEach(entry -> sb.append(entry.getKey() + "=" + entry.getValue() + ","));
-  //      }
-  //    };
-  //  }
+  /**
+   * Cache customizer
+   *
+   * @return
+   */
+  @Bean
+  public CacheManagerCustomizer<HazelcastCacheManager> cacheManagerCustomizer() {
+    return new CacheManagerCustomizer<HazelcastCacheManager>() {
+      @Override
+      public void customize(HazelcastCacheManager cacheManager) {
+        StringBuffer sb = new StringBuffer();
+        cacheNames.ifPresent(
+            cache -> {
+              cache
+                  .entrySet()
+                  .forEach(entry -> sb.append(entry.getKey() + "=" + entry.getValue() + ","));
+            });
+      }
+    };
+  }
 }

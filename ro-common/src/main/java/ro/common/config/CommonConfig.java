@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 
-import ro.common.hazelcast.HazelcastConfig;
 import ro.common.logging.Log4j2Config;
 
 /**

@@ -1,2 +1,2 @@
 "# rico" 
-"update"
+"formated update"

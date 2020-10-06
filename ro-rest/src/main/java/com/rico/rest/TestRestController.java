@@ -1,14 +1,11 @@
 /* Licensed under Apache-2.0 */
 package com.rico.rest;
 
-import com.rico.rest.domain.NamesOnly;
-import com.rico.rest.domain.PersonDTO;
-import com.rico.rest.entity.Person;
-import com.rico.rest.services.PersonService;
 import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import lombok.extern.log4j.Log4j2;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,7 +16,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.rico.rest.domain.NamesOnly;
+import com.rico.rest.domain.PersonDTO;
+import com.rico.rest.entity.Person;
+import com.rico.rest.services.PersonService;
+
+import lombok.extern.log4j.Log4j2;
 import ro.common.exception.CommonRestException;
 import ro.common.exception.GenericServiceException;
 import ro.common.rest.CommonDTOConverter;
@@ -44,7 +49,7 @@ public class TestRestController {
    * @throws CommonRestException
    */
   @GetMapping(
-      value = "/person/:lastName",
+      value = "/person/{lastName}",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public List<NamesOnly> getPersonNames(
@@ -53,6 +58,35 @@ public class TestRestController {
       throws CommonRestException {
     try {
       return service.getPersonNamesOnlyByLastName(lastName);
+    } catch (GenericServiceException e) {
+      log.error("Test Rest error ", e);
+      throw new CommonRestException(
+          CommonErrorCodes.E_GEN_INTERNAL_ERR,
+          headers,
+          HttpStatus.SERVICE_UNAVAILABLE,
+          e.getMessage(),
+          e);
+    }
+  }
+  
+  /**
+   * Get method to retrieve person using id
+   *
+   * @param id
+   * @param headers
+   * @return
+   * @throws CommonRestException
+   */
+  @GetMapping(
+      value = "/person",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public Person getPerson(
+      @NotBlank(message = CommonErrorCodes.E_HTTP_BAD_REQUEST) @RequestParam(value="id", required=true) final String id,
+      @RequestHeader HttpHeaders headers)
+      throws CommonRestException {
+    try {
+      return service.getPersonById(Long.parseLong(id)).orElse(null);
     } catch (GenericServiceException e) {
       log.error("Test Rest error ", e);
       throw new CommonRestException(

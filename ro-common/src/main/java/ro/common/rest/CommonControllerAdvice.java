@@ -153,7 +153,6 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
         be, CommonErrorCodes.E_HTTP_BINDING_ERR, headers, status, request);
   }
 
-  
   /** Handle Message not acceptable exception */
   @Override
   public ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(
@@ -172,7 +171,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
       final HttpHeaders headers,
       final HttpStatus status,
       final WebRequest request) {
-	  
+
     return this.generateErrorResponse(
         ex, CommonErrorCodes.E_HTTP_UNKNOWN_URL, headers, status, request);
   }
@@ -231,6 +230,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
    */
   @ExceptionHandler(value = {ConstraintViolationException.class})
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  @ResponseBody
   public CommonErrorResponse handleConstraintViolation(final ConstraintViolationException cve) {
     HttpServletRequest request =
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -247,8 +247,8 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
   /**
    * Exception Handler for Custom Exceptions.
    *
-   * @param ce the CmksException
-   * @return ResponseEntity<ErrorResponse> with the error response for CmksException
+   * @param ce the CommonRestException
+   * @return ResponseEntity<ErrorResponse> with the error response for CommonRestException
    */
   @ResponseBody
   @ExceptionHandler(CommonRestException.class)

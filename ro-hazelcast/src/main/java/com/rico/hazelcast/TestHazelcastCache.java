@@ -1,19 +1,16 @@
 /* Licensed under Apache-2.0 */
 package com.rico.hazelcast;
 
+import com.rico.hazelcast.entity.Address;
+import com.rico.hazelcast.entity.Person;
+import com.rico.hazelcast.services.PersonService;
 import java.util.ArrayList;
 import java.util.List;
-
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
-import com.rico.hazelcast.entity.Address;
-import com.rico.hazelcast.entity.Person;
-import com.rico.hazelcast.services.PersonService;
-
-import lombok.extern.log4j.Log4j2;
 import ro.common.exception.GenericServiceException;
 
 /**

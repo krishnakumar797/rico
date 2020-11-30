@@ -1,22 +1,18 @@
 /* Licensed under Apache-2.0 */
 package com.rico.hibernate;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.rico.hibernate.domain.NamesOnly;
 import com.rico.hibernate.entity.Address;
 import com.rico.hibernate.entity.Person;
 import com.rico.hibernate.services.PersonService;
-
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ro.common.exception.GenericServiceException;
 
 /**

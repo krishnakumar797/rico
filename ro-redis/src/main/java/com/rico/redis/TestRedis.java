@@ -3,10 +3,8 @@ package com.rico.redis;
 
 import com.rico.redis.documents.Test;
 import com.rico.redis.services.KeyValueStoreService;
-
-import lombok.extern.log4j.Log4j2;
-
 import javax.annotation.PostConstruct;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

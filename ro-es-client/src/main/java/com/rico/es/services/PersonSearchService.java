@@ -2,9 +2,7 @@
 package com.rico.es.services;
 
 import com.rico.es.documents.Person;
-
 import lombok.extern.log4j.Log4j2;
-
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.query.Criteria;

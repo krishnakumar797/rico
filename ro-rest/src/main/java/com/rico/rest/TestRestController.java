@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +28,7 @@ import ro.common.exception.CommonRestException;
 import ro.common.exception.GenericServiceException;
 import ro.common.rest.CommonDTOConverter;
 import ro.common.rest.CommonErrorCodes;
+import ro.common.utils.HttpStatusCode;
 
 /** Testing Rest controller service */
 @RestController
@@ -63,12 +63,12 @@ public class TestRestController {
       throw new CommonRestException(
           CommonErrorCodes.E_GEN_INTERNAL_ERR,
           headers,
-          HttpStatus.SERVICE_UNAVAILABLE,
+          HttpStatusCode.SERVICE_UNAVAILABLE,
           e.getMessage(),
           e);
     }
   }
-  
+
   /**
    * Get method to retrieve person using id
    *
@@ -82,7 +82,9 @@ public class TestRestController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public Person getPerson(
-      @NotBlank(message = CommonErrorCodes.E_HTTP_BAD_REQUEST) @RequestParam(value="id", required=true) final String id,
+      @NotBlank(message = CommonErrorCodes.E_HTTP_BAD_REQUEST)
+          @RequestParam(value = "id", required = true)
+          final String id,
       @RequestHeader HttpHeaders headers)
       throws CommonRestException {
     try {
@@ -92,7 +94,7 @@ public class TestRestController {
       throw new CommonRestException(
           CommonErrorCodes.E_GEN_INTERNAL_ERR,
           headers,
-          HttpStatus.SERVICE_UNAVAILABLE,
+          HttpStatusCode.SERVICE_UNAVAILABLE,
           e.getMessage(),
           e);
     }
@@ -122,7 +124,7 @@ public class TestRestController {
       throw new CommonRestException(
           CommonErrorCodes.E_GEN_INTERNAL_ERR,
           headers,
-          HttpStatus.SERVICE_UNAVAILABLE,
+          HttpStatusCode.SERVICE_UNAVAILABLE,
           e.getMessage(),
           e);
     }

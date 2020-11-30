@@ -3,7 +3,6 @@ package com.rico.hazelcast;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
 import ro.common.config.CommonConfig;
 import ro.common.hazelcast.HazelcastConfig;
 import ro.common.hibernate.HibernateConfig;

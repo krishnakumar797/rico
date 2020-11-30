@@ -1,9 +1,9 @@
 appConfig {
   keyvaluestore = 'y'
   logging = 'y'
-  javaMainClass = "com.rico.redis.RedisApplication"
+  javaMainClass = "com.rico.redis.Application"
 }
 
 dependencies {
-    implementation project(':ro-common')
+    implementation project(':common')
 }

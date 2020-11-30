@@ -14,6 +14,8 @@ import com.rico.hazelcast.entity.Person;
 import lombok.extern.log4j.Log4j2;
 import ro.common.exception.GenericServiceException;
 import ro.common.hibernate.GenericDAO;
+import ro.common.rest.CommonErrorCodes;
+import ro.common.utils.HttpStatusCode;
 
 /**
  * Sample Service for Hibernate person entity document
@@ -40,7 +42,8 @@ public class PersonService {
       return personRepository.saveEntity(person);
     } catch (Exception e) {
       log.error("Error in saving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -69,7 +72,8 @@ public class PersonService {
       return personRepository.getEntitiesNoParam(hqlQuery);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -95,7 +99,8 @@ public class PersonService {
       return personRepository.getEntitiesByStringParam(hqlQuery, residentStatus);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -119,7 +124,8 @@ public class PersonService {
       return personRepository.updateRecords(sqlQuery, firstName, id);
     } catch (Exception e) {
       log.error("Error in updating the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -136,7 +142,8 @@ public class PersonService {
       personRepository.deleteEntity(p);
     } catch (Exception e) {
       log.error("Error in deleting the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 }

@@ -1,9 +1,9 @@
 appConfig {
   queue = 'y'
   logging = 'y'
-  javaMainClass = "com.rico.kafka.KafkaApplication"
+  javaMainClass = "com.rico.kafka.Application"
 }
 
 dependencies {
-    implementation project(':ro-common')
+    implementation project(':common')
 }

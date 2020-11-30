@@ -3,7 +3,6 @@ package com.rico.es;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
 import ro.common.config.CommonConfig;
 import ro.common.elasticsearch.ElasticSearchConfig;
 import ro.common.logging.Log4j2Config;

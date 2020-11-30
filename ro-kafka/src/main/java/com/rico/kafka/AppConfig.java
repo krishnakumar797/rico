@@ -3,7 +3,6 @@ package com.rico.kafka;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
 import ro.common.config.CommonConfig;
 import ro.common.kafka.KafkaConfig;
 import ro.common.logging.Log4j2Config;

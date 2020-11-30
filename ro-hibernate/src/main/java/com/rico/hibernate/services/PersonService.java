@@ -1,20 +1,19 @@
 /* Licensed under Apache-2.0 */
 package com.rico.hibernate.services;
 
+import com.rico.hibernate.domain.NamesOnly;
+import com.rico.hibernate.entity.Person;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.rico.hibernate.domain.NamesOnly;
-import com.rico.hibernate.entity.Person;
-
-import lombok.extern.log4j.Log4j2;
 import ro.common.exception.GenericServiceException;
 import ro.common.hibernate.GenericDAO;
+import ro.common.rest.CommonErrorCodes;
+import ro.common.utils.HttpStatusCode;
 
 /**
  * Sample Service for Hibernate person entity document
@@ -41,7 +40,8 @@ public class PersonService {
       return personRepository.saveEntity(person);
     } catch (Exception e) {
       log.error("Error in saving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -57,7 +57,8 @@ public class PersonService {
       return Optional.ofNullable(personRepository.getEntity(Person.class, id));
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -75,7 +76,8 @@ public class PersonService {
       return personRepository.getRecordsWithLimit(Person.class, indexNum, 10, sqlQuery);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -95,7 +97,8 @@ public class PersonService {
       return personRepository.getEntitiesNoParam(hqlQuery);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -113,7 +116,8 @@ public class PersonService {
       return personRepository.getEntitiesByStringParam(hqlQuery, residentStatus);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -133,7 +137,8 @@ public class PersonService {
       return personRepository.getEntitiesByIntAndStringParam(hqlQuery, age, country);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -152,7 +157,8 @@ public class PersonService {
       return personRepository.getEntitiesByStringParamWithLimit(hqlQuery, indexNum, 10, lastName);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -171,7 +177,8 @@ public class PersonService {
       return personRepository.getRecords(Person.class, sqlQuery, "%" + firstName);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -188,7 +195,8 @@ public class PersonService {
       return Optional.ofNullable(personRepository.getEntityByStringParam(hql, email));
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -205,7 +213,8 @@ public class PersonService {
       return personRepository.updateRecords(sqlQuery, firstName, id);
     } catch (Exception e) {
       log.error("Error in updating the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -224,7 +233,8 @@ public class PersonService {
       return personRepository.getRecords(NamesOnly.class, sqlQuery, lastName);
     } catch (Exception e) {
       log.error("Error in retrieving the Person NamesOnly ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -241,7 +251,8 @@ public class PersonService {
       return personRepository.getEntitiesByIntParam(hqlQuery, age);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -257,7 +268,8 @@ public class PersonService {
       return personRepository.getEntitiesNoParam(hqlQuery);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -274,7 +286,8 @@ public class PersonService {
       return personRepository.getEntitiesByDateParam(hqlQuery, date);
     } catch (Exception e) {
       log.error("Error in retrieving the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 
@@ -290,7 +303,8 @@ public class PersonService {
       personRepository.deleteEntity(p);
     } catch (Exception e) {
       log.error("Error in deleting the Person ", e);
-      throw new GenericServiceException("Error", e);
+      throw new GenericServiceException(
+          "Error", CommonErrorCodes.E_HTTP_BAD_REQUEST, HttpStatusCode.INTERNAL_SERVER_ERROR, e);
     }
   }
 }

@@ -1,11 +1,9 @@
 /* Licensed under Apache-2.0 */
 package com.rico.kafka.services;
 
-import org.springframework.stereotype.Service;
-
 import com.rico.kafka.utils.QueueTopics;
-
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
 import ro.common.exception.DataParsingException;
 import ro.common.kafka.CommonQueuePublisher;
 import ro.common.kafka.MessageWrapper;

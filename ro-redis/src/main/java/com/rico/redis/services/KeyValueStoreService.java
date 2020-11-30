@@ -1,10 +1,8 @@
 /* Licensed under Apache-2.0 */
 package com.rico.redis.services;
 
-import org.springframework.stereotype.Service;
-
 import com.rico.redis.documents.Test;
-
+import org.springframework.stereotype.Service;
 import ro.common.redis.CommonKeyValueStore;
 
 /**

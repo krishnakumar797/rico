@@ -2,9 +2,9 @@ appConfig {
   persistence = 'hibernate'
   dataBase = 'mysql'
   logging = 'y'
-  javaMainClass = "com.rico.hibernate.HibernateApplication"
+  javaMainClass = "com.rico.hibernate.Application"
 }
 
 dependencies {
-    implementation project(':ro-common')
+    implementation project(':common')
 }

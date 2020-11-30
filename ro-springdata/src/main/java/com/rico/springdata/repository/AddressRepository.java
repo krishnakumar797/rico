@@ -2,7 +2,6 @@
 package com.rico.springdata.repository;
 
 import com.rico.springdata.entity.Address;
-
 import ro.common.springdata.CommonCrudRepository;
 
 /**
@@ -10,6 +9,4 @@ import ro.common.springdata.CommonCrudRepository;
  *
  * @author r.krishnakumar
  */
-public interface AddressRepository extends CommonCrudRepository<Address, Long> {
-
-}
+public interface AddressRepository extends CommonCrudRepository<Address, Long> {}

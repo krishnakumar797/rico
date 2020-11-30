@@ -4,9 +4,9 @@ appConfig {
   dataBase = 'mysql'
   logging = 'y'
   devTools = 'y'
-  javaMainClass = "com.rico.rest.RestApplication"
+  javaMainClass = "com.rico.rest.Application"
 }
 
 dependencies {
-    implementation project(':ro-common')
+    implementation project(':common')
 }

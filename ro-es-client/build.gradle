@@ -1,9 +1,9 @@
 appConfig {
   search = 'y'
   logging = 'y'
-  javaMainClass = "com.rico.es.ESClientApplication"
+  javaMainClass = "com.rico.es.Application"
 }
 
 dependencies {
-    implementation project(':ro-common')
+    implementation project(':common')
 }

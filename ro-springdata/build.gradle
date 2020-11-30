@@ -2,9 +2,9 @@ appConfig {
   persistence = 'springData'
   dataBase = 'mysql'
   logging = 'y'
-  javaMainClass = "com.rico.springdata.SpringDataApplication"
+  javaMainClass = "com.rico.springdata.Application"
 }
 
 dependencies {
-    implementation project(':ro-common')
+    implementation project(':common')
 }

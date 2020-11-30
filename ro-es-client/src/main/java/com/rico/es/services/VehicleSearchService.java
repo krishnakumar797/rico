@@ -1,8 +1,9 @@
 /* Licensed under Apache-2.0 */
 package com.rico.es.services;
 
+import com.rico.es.documents.Vehicle;
 import java.util.List;
-
+import lombok.extern.log4j.Log4j2;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -10,10 +11,6 @@ import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
-
-import com.rico.es.documents.Vehicle;
-
-import lombok.extern.log4j.Log4j2;
 import ro.common.elasticsearch.CommonSearchRepository;
 
 /**

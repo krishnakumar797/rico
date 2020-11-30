@@ -1,9 +1,9 @@
 appConfig {
   grpcServer = 'y'
   logging = 'y'
-  javaMainClass = "com.rico.grpc.server.GrpcServerApplication"
+  javaMainClass = "com.rico.grpc.server.Application"
 }
 
 dependencies {
-    implementation project(':ro-common')
+    implementation project(':common')
 }

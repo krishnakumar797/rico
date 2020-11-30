@@ -1,9 +1,9 @@
 appConfig {
   dataBase = 'couchbase'
   logging = 'y'
-  javaMainClass = "com.rico.couchbase.CBTestApplication"
+  javaMainClass = "com.rico.couchbase.Application"
 }
 
 dependencies {
-    implementation project(':ro-common')
+    implementation project(':common')
 }

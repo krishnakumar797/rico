@@ -2,12 +2,6 @@ plugins {
 	id "com.google.protobuf" version "0.8.11"
 }
 
-dependencies {
-
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
-}
-
 // Place proto files under src/main/proto
 sourceSets {
   main {

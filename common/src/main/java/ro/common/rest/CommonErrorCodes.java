@@ -16,4 +16,6 @@ public interface CommonErrorCodes {
   String E_HTTP_ILLEGAL_URL_PARAM = "201";
   String E_HTTP_ILLEGAL_JSON_PARAM = "202";
   String E_HTTP_UNAUTHORIZED_RQST = "209";
+  String E_HTTP_UN_AUTHORIZED = "401";
+  String E_HTTP_FORBIDDEN_ACCESS = "403";
 }

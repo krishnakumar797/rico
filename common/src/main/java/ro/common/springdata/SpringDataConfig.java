@@ -1,16 +1,7 @@
 /* Licensed under Apache-2.0 */
 package ro.common.springdata;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
+import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
@@ -29,12 +20,16 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import com.zaxxer.hikari.HikariDataSource;
-
 import ro.common.exception.SpringDataInitException;
+import ro.common.security.SecurityConfig;
 import ro.common.utils.AppContext;
 import ro.common.utils.Utils;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * JPA configuration params
@@ -69,13 +64,22 @@ public class SpringDataConfig {
   @Qualifier("multitenancy")
   private boolean isMultenant;
 
+  @Autowired
+  @Qualifier("security")
+  private boolean isSecurityEnabled;
+
   @Autowired private String dataBaseType;
+
+  private String packageName;
 
   /** Spring data initialisation validations */
   @PostConstruct
   public void initialise() {
     if (dataBaseType.equals("mysql") && isMultenant) {
       throw new SpringDataInitException("Multitenancy is not supported with MySQL");
+    }
+    if(isSecurityEnabled) {
+      packageName = SecurityConfig.class.getPackageName();
     }
   }
 
@@ -176,7 +180,12 @@ public class SpringDataConfig {
     factory.setJpaProperties(jpaProperties);
     factory.setJpaVendorAdapter(vendorAdapter);
     factory.setDataSource(dataSource);
-    factory.setPackagesToScan(entityPackageName);
+    List<String> entityPackageList = new ArrayList<>();
+    entityPackageList.add(entityPackageName);
+    if(this.isSecurityEnabled){
+      entityPackageList.add(packageName);
+    }
+    factory.setPackagesToScan(entityPackageList.toArray(new String[entityPackageList.size()]));
     factory.setPersistenceUnitName("ricoPersistence");
     return factory;
   }

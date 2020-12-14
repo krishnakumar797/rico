@@ -1,5 +1,5 @@
 /* Licensed under Apache-2.0 */
-package com.rico.springdata.domain;
+package com.rico.security.domain;
 
 import lombok.Value;
 

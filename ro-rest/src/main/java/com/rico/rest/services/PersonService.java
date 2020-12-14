@@ -69,7 +69,6 @@ public class PersonService {
   /**
    * Service method to get all Person entity as pages
    *
-   * @param pageable
    * @return
    * @throws GenericServiceException
    */
@@ -159,7 +158,6 @@ public class PersonService {
   /**
    * Service method to retrieve names only for Person by last name
    *
-   * @param id
    * @return
    * @throws GenericServiceException
    */

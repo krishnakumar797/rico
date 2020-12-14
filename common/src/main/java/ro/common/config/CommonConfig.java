@@ -14,6 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 
 import ro.common.logging.Log4j2Config;
+import ro.common.utils.Utils;
 
 /**
  * Defines common configuration beans for the RICO framework
@@ -30,6 +31,9 @@ public class CommonConfig implements ApplicationContextAware {
 
   @Value("${database:''}")
   private String dataBaseType;
+
+  @Value("${persistence:''}")
+  private String persistenceType;
 
   @Value("${multitenancy.enabled: 'n'}")
   private String isMultitenancyEnabled;
@@ -57,6 +61,11 @@ public class CommonConfig implements ApplicationContextAware {
     return dataBaseType;
   }
 
+  /**
+   * Checking if log is enabled
+   *
+   * @return
+   */
   @Bean("log")
   @ConditionalOnProperty(name = "log.enabled", havingValue = "y")
   public boolean isLoggingEnabled() {
@@ -70,6 +79,11 @@ public class CommonConfig implements ApplicationContextAware {
     return true;
   }
 
+  /**
+   * Checking if cache is enabled
+   *
+   * @return
+   */
   @Bean("cache")
   @ConditionalOnProperty(name = "cache.enabled", havingValue = "y")
   public boolean isCacheEnabled() {
@@ -83,6 +97,10 @@ public class CommonConfig implements ApplicationContextAware {
     return true;
   }
 
+  /**
+   * Checking if multitenancy is enabled
+   * @return
+   */
   @Bean("multitenancy")
   public boolean isMultitenancyEnabled() {
     if ("y".contentEquals(this.isMultitenancyEnabled)) {
@@ -92,12 +110,29 @@ public class CommonConfig implements ApplicationContextAware {
     }
   }
 
+  /**
+   * Checking if security is enabled
+   *
+   * @return
+   */
   @Bean("security")
   public boolean isSecurityEnabled() {
     if ("y".contentEquals(this.isSecurityEnabled)) {
+      Utils.persistenceType = this.persistenceType;
       return true;
     } else {
       return false;
     }
+  }
+
+  /**
+   * Checking if hibernate is enabled
+   * @return
+   */
+  @Bean("hConfig")
+  @ConditionalOnProperty(name = "persistence", havingValue = "hibernate")
+  public boolean isHibernateEnabled() {
+      applicationContext.getBean("genericDAO");
+      return true;
   }
 }

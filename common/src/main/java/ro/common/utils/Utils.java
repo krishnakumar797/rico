@@ -64,6 +64,8 @@ public class Utils {
 
   public static String dataBaseType;
 
+  public static String persistenceType = new String();
+
   public static boolean propertyHasTrailingSpaces(String property) {
     Character lastCharacter = property.charAt(property.length() - 1);
     return Character.isWhitespace(lastCharacter);

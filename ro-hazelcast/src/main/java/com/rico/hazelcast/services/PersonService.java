@@ -1,17 +1,14 @@
 /* Licensed under Apache-2.0 */
 package com.rico.hazelcast.services;
 
+import com.rico.hazelcast.entity.Person;
 import java.util.List;
-
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.rico.hazelcast.entity.Person;
-
-import lombok.extern.log4j.Log4j2;
 import ro.common.exception.GenericServiceException;
 import ro.common.hibernate.GenericDAO;
 import ro.common.rest.CommonErrorCodes;

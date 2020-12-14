@@ -1,15 +1,16 @@
 /* Licensed under Apache-2.0 */
-package com.rico.springdata.repository;
+package com.rico.security.repository;
 
-import com.rico.springdata.domain.NamesOnly;
-import com.rico.springdata.entity.Person;
-import java.util.List;
+import com.rico.security.domain.NamesOnly;
+import com.rico.security.entity.Person;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ro.common.springdata.CommonCrudRepository;
+
+import java.util.List;
 
 /**
  * Sample repository implementation for SpringData

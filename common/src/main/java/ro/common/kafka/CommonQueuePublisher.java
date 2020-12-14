@@ -1,8 +1,7 @@
 /* Licensed under Apache-2.0 */
 package ro.common.kafka;
 
-import java.util.function.BiConsumer;
-import org.nustaq.serialization.FSTConfiguration;
+import com.esotericsoftware.kryo.kryo5.Kryo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,6 +10,8 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import ro.common.generated.MessageProtoOuterClass;
 import ro.common.generated.MessageProtoOuterClass.MessageProto;
+
+import java.util.function.BiConsumer;
 
 /**
  * Abstract Common publisher class for kafka topics
@@ -22,7 +23,7 @@ public abstract class CommonQueuePublisher {
 
   @Autowired private KafkaTemplate<String, byte[]> kafkaTemplate;
 
-  @Autowired private FSTConfiguration conf;
+  @Autowired private Kryo conf;
 
   @FunctionalInterface
   protected interface TriConsumer<T1, T2, T3> {
@@ -142,6 +143,6 @@ public abstract class CommonQueuePublisher {
    * @return this
    */
   protected final MessageWrapper getMessageWrapper() {
-    return MessageWrapper.newInstance().with(local -> local.setFSTConfiguration(conf)).build();
+    return MessageWrapper.newInstance().with(local -> local.setKryoConfiguration(conf)).build();
   }
 }

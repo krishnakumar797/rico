@@ -125,7 +125,6 @@ public class PersonService {
   /**
    * Service method to get all Person entity with address
    *
-   * @param indexNum
    * @return
    * @throws GenericServiceException
    */

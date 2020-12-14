@@ -1,4 +1,5 @@
 appConfig {
+  appName = "ro-rest"
   rest = 'y'
   persistence = 'springData'
   dataBase = 'mysql'
@@ -6,7 +7,6 @@ appConfig {
   devTools = 'y'
   javaMainClass = "com.rico.rest.Application"
 }
-
 dependencies {
     implementation project(':common')
 }

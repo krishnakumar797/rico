@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+
+import com.esotericsoftware.kryo.kryo5.Kryo;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.CreateTopicsOptions;
@@ -17,7 +19,6 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.nustaq.serialization.FSTConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -120,8 +121,8 @@ public class KafkaConfig {
   }
 
   @Bean
-  FSTConfiguration fstConfiguration() {
-    return FSTConfiguration.createDefaultConfiguration();
+  Kryo kryoConfiguration() {
+    return new Kryo();
   }
 
   /**

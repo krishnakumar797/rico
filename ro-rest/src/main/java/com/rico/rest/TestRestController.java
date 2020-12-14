@@ -1,11 +1,14 @@
 /* Licensed under Apache-2.0 */
 package com.rico.rest;
 
+import com.rico.rest.domain.NamesOnly;
+import com.rico.rest.domain.PersonDTO;
+import com.rico.rest.entity.Person;
+import com.rico.rest.services.PersonService;
 import java.util.List;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,13 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.rico.rest.domain.NamesOnly;
-import com.rico.rest.domain.PersonDTO;
-import com.rico.rest.entity.Person;
-import com.rico.rest.services.PersonService;
-
-import lombok.extern.log4j.Log4j2;
 import ro.common.exception.CommonRestException;
 import ro.common.exception.GenericServiceException;
 import ro.common.rest.CommonDTOConverter;

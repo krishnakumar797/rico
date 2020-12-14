@@ -1,95 +1,95 @@
 
-
-import javax.inject.Inject
-
 buildscript {
-   repositories {
-     mavenCentral()
-     jcenter()
-   }
+	repositories {
+		mavenCentral()
+		jcenter()
+	}
 }
-  
+
 plugins {
-  id 'io.spring.dependency-management' version "1.0.8.RELEASE" apply false
-  id 'org.springframework.boot' version "2.2.4.RELEASE" apply false
-  id "name.remal.sonarlint" version "1.0.200" apply false
-  id "io.freefair.lombok" version "5.1.0" apply false
-  id "com.diffplug.gradle.spotless" version "3.28.0" apply false
-  id 'com.google.cloud.tools.jib' version '2.6.0' apply false
-  id 'com.rico.platform.rocommon' version '2.0' apply false
-  id 'com.rico.platform.roapp' version '2.0' apply false
-  id 'com.rico.platform.dockerRun' version '2.0' apply false
-  id 'com.rico.platform.swarm' version '2.0' apply false
+	id 'io.spring.dependency-management' version "1.0.8.RELEASE" apply false
+	id 'org.springframework.boot' version "2.2.4.RELEASE" apply false
+	id "name.remal.sonarlint" version "1.1.4" apply false
+	id "io.freefair.lombok" version "5.1.0" apply false
+	id "com.diffplug.gradle.spotless" version "3.28.0" apply false
+	id 'com.google.cloud.tools.jib' version '2.6.0' apply false
+	id 'de.jjohannes.extra-java-module-info' version '0.3' apply false
+	id "org.beryx.jlink" version "2.22.3" apply false
+	id 'com.rico.platform.rocommon' version '2.0' apply false
+	id 'com.rico.platform.roapp' version '2.0' apply false
+	id 'com.rico.platform.dockerRun' version '2.0' apply false
+	id 'com.rico.platform.swarm' version '2.0' apply false
 }
 
 ext {
 	protobufVersion = "3.11.4"
 	protocJavaVersion = "1.27.1"
-  }
+}
 
 //Dependencies for common application
 project(':common') {
-  apply plugin: 'java-library'
-  apply plugin: 'com.rico.platform.rocommon'
+	apply plugin: 'java'
+	apply plugin: 'java-library'
+	apply plugin: 'com.rico.platform.rocommon'
 }
 
 // Configurations applied to all subprojects
 subprojects {
 
-  group = 'com.ro'
-  version = '0.0.1-SNAPSHOT'
+	group = 'com.ro'
+	version = '0.0.1-SNAPSHOT'
 
-  repositories {
-    jcenter()
-    mavenCentral()
-  }
-  
-  apply plugin: 'java'
-  apply plugin: 'name.remal.sonarlint'
-  apply plugin: 'io.spring.dependency-management'
-  apply plugin: 'io.freefair.lombok'
-  apply plugin: 'com.diffplug.gradle.spotless'
-  
-  // Applying sonarlint plugin
-  sonarlint {
-     ignoreFailures = true
-	 excludes {
-	      source 'ro/common/generated/*'
-	 }
-   }
-   
-  // Applying spotless plugin with google java formatter
-   spotless {
-    java {
-      googleJavaFormat()
-      licenseHeader '/* Licensed under Apache-2.0 */'
-    }
-  }
-  
-  it.tasks.build.dependsOn it.tasks.spotlessApply
-  
-  //apply to all sub project except common
-  if (!it.name.startsWith('common')) {
-    apply plugin: 'com.rico.platform.roapp'
-	apply plugin: 'org.springframework.boot'
-   }
-  
-  sourceCompatibility = '1.8'
-  targetCompatibility = '1.8'
- 
- configurations {
-    all {
-          exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-      }
-      developmentOnly
-      runtimeClasspath {
-          extendsFrom developmentOnly
-      }
- }
- 
- dependencyManagement {
-    imports {
-      mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE")
-    }
-  }
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+
+	apply plugin: 'name.remal.sonarlint'
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'io.freefair.lombok'
+	apply plugin: 'com.diffplug.gradle.spotless'
+
+	// Applying sonarlint plugin
+	sonarlint {
+		ignoreFailures = true
+		excludes {
+			source 'ro/common/generated/*'
+		}
+	}
+
+	// Applying spotless plugin with google java formatter
+	spotless {
+		java {
+			googleJavaFormat()
+			licenseHeader '/* Licensed under Apache-2.0 */'
+		}
+	}
+
+	it.tasks.build.dependsOn it.tasks.spotlessApply
+
+	//apply to all sub project except common
+	if (!it.name.startsWith('common')) {
+		apply plugin: 'application'
+		apply plugin: 'com.rico.platform.roapp'
+		apply plugin: 'org.springframework.boot'
+	}
+
+	sourceCompatibility = '11'
+	targetCompatibility = '11'
+
+	configurations {
+		all {
+			exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+		}
+		developmentOnly
+		runtimeClasspath {
+			extendsFrom developmentOnly
+		}
+	}
+
+	dependencyManagement {
+		imports {
+			mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE")
+		}
+	}
 }

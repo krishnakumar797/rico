@@ -45,7 +45,6 @@ public interface PersonRepository extends CommonCrudRepository<Person, Long> {
    * <p>#{#entityName} is to denote the domain type associated with the given repository here its
    * same as 'Person'
    *
-   * @param pageable
    * @return
    */
   @Query("select p from #{#entityName} p join fetch p.addressCollection a")

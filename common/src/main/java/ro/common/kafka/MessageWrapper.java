@@ -1,10 +1,14 @@
 /* Licensed under Apache-2.0 */
 package ro.common.kafka;
 
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 import com.google.protobuf.ByteString;
-import java.util.function.Consumer;
-import org.nustaq.serialization.FSTConfiguration;
 import ro.common.exception.DataParsingException;
+
+import java.io.ByteArrayOutputStream;
+import java.util.function.Consumer;
 
 /**
  * Common wrapper for the message objects
@@ -21,7 +25,7 @@ public final class MessageWrapper {
 
   private ByteString s;
 
-  private FSTConfiguration conf;
+  private Kryo conf;
 
   private MessageWrapper() {}
 
@@ -33,7 +37,7 @@ public final class MessageWrapper {
     return s;
   }
 
-  void setFSTConfiguration(FSTConfiguration conf) {
+  void setKryoConfiguration(Kryo conf) {
     this.conf = conf;
   }
 
@@ -77,7 +81,9 @@ public final class MessageWrapper {
   public <T> T getData(Class<T> clazz) throws DataParsingException {
     T obj = null;
     try {
-      obj = clazz.cast(conf.asObject(this.data));
+      Input input = new Input(this.data);
+      Object object =  conf.readObject(input, Object.class);
+      obj = clazz.cast(object);
     } catch (Exception e) {
       throw new DataParsingException("Invalid data object", e);
     }
@@ -87,12 +93,15 @@ public final class MessageWrapper {
   /**
    * Method to serialize the data object
    *
-   * @param obj
+   * @param data
    * @throws DataParsingException
    */
   public void setData(Object data) throws DataParsingException {
     try {
-      byte[] barray = conf.asByteArray(data);
+      ByteArrayOutputStream b = new ByteArrayOutputStream();
+      Output output = new Output(b);
+      conf.writeObject(output, data);
+      byte[] barray = output.toBytes();
       this.s = ByteString.copyFrom(barray);
     } catch (Exception e) {
       throw new DataParsingException("Invalid data object", e);

@@ -19,7 +19,6 @@ import ro.common.utils.HttpStatusCode;
 @Service
 @Transactional(rollbackFor = {GenericServiceException.class})
 @Log4j2
-@SuppressWarnings({"squid:S1192"})
 public class AddressService {
 
   @Autowired private AddressRepository addressRepository;
@@ -27,7 +26,7 @@ public class AddressService {
   /**
    * Service method to save Address entity
    *
-   * @param person
+   * @param address
    * @return
    * @throws GenericServiceException
    */

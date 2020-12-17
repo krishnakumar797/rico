@@ -2,7 +2,6 @@
 package ro.common.config;
 
 import javax.annotation.PostConstruct;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -12,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
-
 import ro.common.logging.Log4j2Config;
 import ro.common.utils.Utils;
 
@@ -39,7 +37,7 @@ public class CommonConfig implements ApplicationContextAware {
   private String isMultitenancyEnabled;
 
   @Value("${security.enabled: 'n'}")
-  private String isSecurityEnabled;
+  private String securityTypeEnabled;
 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -99,6 +97,7 @@ public class CommonConfig implements ApplicationContextAware {
 
   /**
    * Checking if multitenancy is enabled
+   *
    * @return
    */
   @Bean("multitenancy")
@@ -117,22 +116,23 @@ public class CommonConfig implements ApplicationContextAware {
    */
   @Bean("security")
   public boolean isSecurityEnabled() {
-    if ("y".contentEquals(this.isSecurityEnabled)) {
-      Utils.persistenceType = this.persistenceType;
-      return true;
-    } else {
+    if ("n".contentEquals(this.securityTypeEnabled)) {
       return false;
     }
+    Utils.persistenceType = this.persistenceType;
+    Utils.securityType = this.securityTypeEnabled;
+    return true;
   }
 
   /**
    * Checking if hibernate is enabled
+   *
    * @return
    */
   @Bean("hConfig")
   @ConditionalOnProperty(name = "persistence", havingValue = "hibernate")
   public boolean isHibernateEnabled() {
-      applicationContext.getBean("genericDAO");
-      return true;
+    applicationContext.getBean("genericDAO");
+    return true;
   }
 }

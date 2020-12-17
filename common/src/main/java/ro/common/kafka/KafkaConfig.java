@@ -1,13 +1,12 @@
 /* Licensed under Apache-2.0 */
 package ro.common.kafka;
 
+import com.esotericsoftware.kryo.kryo5.Kryo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-
-import com.esotericsoftware.kryo.kryo5.Kryo;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.CreateTopicsOptions;

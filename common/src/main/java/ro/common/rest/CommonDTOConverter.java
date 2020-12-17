@@ -1,7 +1,7 @@
+/* Licensed under Apache-2.0 */
 package ro.common.rest;
 
 import org.modelmapper.ModelMapper;
-
 import ro.common.utils.EntityDoc;
 
 /**

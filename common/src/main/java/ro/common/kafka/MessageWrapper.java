@@ -5,10 +5,9 @@ import com.esotericsoftware.kryo.kryo5.Kryo;
 import com.esotericsoftware.kryo.kryo5.io.Input;
 import com.esotericsoftware.kryo.kryo5.io.Output;
 import com.google.protobuf.ByteString;
-import ro.common.exception.DataParsingException;
-
 import java.io.ByteArrayOutputStream;
 import java.util.function.Consumer;
+import ro.common.exception.DataParsingException;
 
 /**
  * Common wrapper for the message objects
@@ -82,7 +81,7 @@ public final class MessageWrapper {
     T obj = null;
     try {
       Input input = new Input(this.data);
-      Object object =  conf.readObject(input, Object.class);
+      Object object = conf.readObject(input, Object.class);
       obj = clazz.cast(object);
     } catch (Exception e) {
       throw new DataParsingException("Invalid data object", e);

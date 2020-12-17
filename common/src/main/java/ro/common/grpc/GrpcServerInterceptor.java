@@ -1,16 +1,14 @@
 /* Licensed under Apache-2.0 */
 package ro.common.grpc;
 
-import java.util.HashSet;
-
-import javax.validation.ConstraintViolationException;
-
 import io.grpc.ForwardingServerCallListener.SimpleForwardingServerCallListener;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
+import java.util.HashSet;
+import javax.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import ro.common.utils.AppContext;
 

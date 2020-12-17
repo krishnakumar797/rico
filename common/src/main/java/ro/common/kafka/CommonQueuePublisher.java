@@ -2,6 +2,7 @@
 package ro.common.kafka;
 
 import com.esotericsoftware.kryo.kryo5.Kryo;
+import java.util.function.BiConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -10,8 +11,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import ro.common.generated.MessageProtoOuterClass;
 import ro.common.generated.MessageProtoOuterClass.MessageProto;
-
-import java.util.function.BiConsumer;
 
 /**
  * Abstract Common publisher class for kafka topics

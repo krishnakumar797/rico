@@ -1,8 +1,9 @@
 appConfig {
-  persistence = 'hibernate'
-  dataBase = 'mysql'
-  logging = 'y'
-  javaMainClass = "com.rico.hibernate.Application"
+    appName = 'ro-hibernate'
+    persistence = 'hibernate'
+    dataBase = 'mysql'
+    logging = 'y'
+    javaMainClass = "com.rico.hibernate.Application"
 }
 
 dependencies {

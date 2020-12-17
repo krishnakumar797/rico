@@ -1,3 +1,4 @@
+/* Licensed under Apache-2.0 */
 package ro.common.security;
 
 /**
@@ -7,5 +8,7 @@ package ro.common.security;
  */
 public interface UserDAO {
 
-    User getUserByUsername(String username);
+  User getUserByUsername(String username);
+
+  User registerUser(User user);
 }

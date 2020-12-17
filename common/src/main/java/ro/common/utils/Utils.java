@@ -1,3 +1,4 @@
+/* Licensed under Apache-2.0 */
 package ro.common.utils;
 
 import java.util.HashMap;
@@ -62,6 +63,26 @@ public class Utils {
     }
   }
 
+  /** Enum for Log levels */
+  public enum SECURITY_TYPE {
+    FORM("form"),
+    JWT("jwt");
+
+    public final String type;
+
+    private SECURITY_TYPE(String type) {
+      this.type = type;
+    }
+  }
+
+  public static String securityType = new String();
+  public static Map<String, String> defaultTargets = new HashMap<>();
+
+  public static final String TOKEN_PREFIX = "Bearer ";
+  public static final String HEADER_STRING = "Authorization";
+  public static String SECRET = new String();
+  public static Long EXPIRATION_TIME = 0l;
+
   public static String dataBaseType;
 
   public static String persistenceType = new String();
@@ -70,6 +91,7 @@ public class Utils {
     Character lastCharacter = property.charAt(property.length() - 1);
     return Character.isWhitespace(lastCharacter);
   }
-  
+
   public static final String CORRELATION_ID = "correlation-id";
+
 }

@@ -1,7 +1,8 @@
 appConfig {
-  grpcClient = 'y'
-  logging = 'y'
-  javaMainClass = "com.rico.grpc.client.Application"
+    appName = 'ro-grpc-client'
+    grpcClient = 'y'
+    logging = 'y'
+    javaMainClass = "com.rico.grpc.client.Application"
 }
 
 dependencies {

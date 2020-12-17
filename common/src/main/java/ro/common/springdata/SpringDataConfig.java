@@ -2,6 +2,11 @@
 package ro.common.springdata;
 
 import com.zaxxer.hikari.HikariDataSource;
+import java.sql.SQLException;
+import java.util.*;
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
@@ -21,15 +26,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ro.common.exception.SpringDataInitException;
-import ro.common.security.SecurityConfig;
 import ro.common.utils.AppContext;
 import ro.common.utils.Utils;
-
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.util.*;
 
 /**
  * JPA configuration params
@@ -78,8 +76,9 @@ public class SpringDataConfig {
     if (dataBaseType.equals("mysql") && isMultenant) {
       throw new SpringDataInitException("Multitenancy is not supported with MySQL");
     }
-    if(isSecurityEnabled) {
-      packageName = SecurityConfig.class.getPackageName();
+    if (isSecurityEnabled) {
+      // packageName = SecurityConfig.class.getPackageName();
+      packageName = "ro.common.security";
     }
   }
 
@@ -182,7 +181,7 @@ public class SpringDataConfig {
     factory.setDataSource(dataSource);
     List<String> entityPackageList = new ArrayList<>();
     entityPackageList.add(entityPackageName);
-    if(this.isSecurityEnabled){
+    if (this.isSecurityEnabled) {
       entityPackageList.add(packageName);
     }
     factory.setPackagesToScan(entityPackageList.toArray(new String[entityPackageList.size()]));

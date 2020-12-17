@@ -1,7 +1,7 @@
+/* Licensed under Apache-2.0 */
 package ro.common.hibernate;
 
 import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 

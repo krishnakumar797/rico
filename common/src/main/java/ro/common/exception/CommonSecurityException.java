@@ -28,10 +28,11 @@ public class CommonSecurityException extends Exception {
   }
 
   public CommonSecurityException(
-          String code,
-          String correlationId,
-          ro.common.utils.HttpStatusCode status,
-          String errorMessage,Throwable throwable) {
+      String code,
+      String correlationId,
+      ro.common.utils.HttpStatusCode status,
+      String errorMessage,
+      Throwable throwable) {
     super(errorMessage, throwable);
     this.code = code;
     this.correlationId = correlationId;

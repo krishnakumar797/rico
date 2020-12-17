@@ -44,11 +44,7 @@ public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
     log.info("SUCCESSFULLY RETRIEVED " + v.getId());
   }
 
-  /**
-   * Method showing ES Doc retrieval using Criteria Query using date range
-   *
-   * @param name
-   */
+  /** Method showing ES Doc retrieval using Criteria Query using date range */
   public void findByCriteriaQuery(
       String fieldValue, String fieldName, String yearFieldName, Integer fromYear, Integer toYear) {
     CriteriaQuery cq =

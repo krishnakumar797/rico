@@ -1,9 +1,8 @@
+/* Licensed under Apache-2.0 */
 package ro.common.logging;
 
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -16,7 +15,6 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-
 import ro.common.exception.LogInitException;
 import ro.common.utils.Utils;
 import ro.common.utils.Utils.LOG_APPENDERS;

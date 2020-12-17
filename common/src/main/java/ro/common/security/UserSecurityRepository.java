@@ -1,3 +1,4 @@
+/* Licensed under Apache-2.0 */
 package ro.common.security;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -15,9 +16,13 @@ import ro.common.springdata.CommonCrudRepository;
 @ConditionalOnMissingBean(name = "hConfig")
 public interface UserSecurityRepository extends UserDAO, CommonCrudRepository<User, Long> {
 
-    default User getUserByUsername(String userName) {
-        return findByUserName(userName);
-    }
+  default User getUserByUsername(String userName) {
+    return findByUserName(userName);
+  }
 
-    User findByUserName(String userName);
+  default User registerUser(User user) {
+    return save(user);
+  }
+
+  User findByUserName(String userName);
 }

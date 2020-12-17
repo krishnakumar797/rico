@@ -1,10 +1,19 @@
+/* Licensed under Apache-2.0 */
 package ro.common.hibernate;
 
 import com.zaxxer.hikari.HikariDataSource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import javax.sql.DataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -18,10 +27,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ro.common.utils.AppContext;
 import ro.common.utils.Utils;
 
-import javax.sql.DataSource;
-import java.util.Optional;
-import java.util.Properties;
-
 /**
  * Hibernate configuration params
  *
@@ -30,6 +35,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+@EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class})
 @DependsOn({"log", "cache"})
 public class HibernateConfig implements ApplicationContextAware {
 
@@ -53,11 +59,20 @@ public class HibernateConfig implements ApplicationContextAware {
 
   @Autowired private String dataBaseType;
 
+  @Autowired
+  @Qualifier("security")
+  private boolean isSecurityEnabled;
+
   private ApplicationContext applicationContext;
+
+  private String securityPackageName;
 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+    if (isSecurityEnabled) {
+      securityPackageName = "ro.common.security";
+    }
   }
 
   /**
@@ -113,7 +128,13 @@ public class HibernateConfig implements ApplicationContextAware {
   public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
     LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
     sessionFactory.setDataSource(dataSource);
-    sessionFactory.setPackagesToScan(entityPackageName);
+    List<String> entityPackageList = new ArrayList<>();
+    entityPackageList.add(entityPackageName);
+    if (this.isSecurityEnabled) {
+      entityPackageList.add(securityPackageName);
+    }
+    sessionFactory.setPackagesToScan(
+        entityPackageList.toArray(new String[entityPackageList.size()]));
     Properties hibernateProperties = new Properties();
     hibernateProperties.put("hibernate.show_sql", showSQL);
     hibernateProperties.put("hibernate.hbm2ddl.auto", "validate");
@@ -127,7 +148,8 @@ public class HibernateConfig implements ApplicationContextAware {
    * @return
    */
   @Bean
-  public HibernateTransactionManager transactionManager(LocalSessionFactoryBean sessionFactoryBean) {
+  public HibernateTransactionManager transactionManager(
+      LocalSessionFactoryBean sessionFactoryBean) {
     HibernateTransactionManager transactionManager = new HibernateTransactionManager();
     transactionManager.setSessionFactory(sessionFactoryBean.getObject());
     return transactionManager;

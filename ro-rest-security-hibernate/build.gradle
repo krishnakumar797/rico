@@ -1,0 +1,13 @@
+appConfig {
+  appName ='ro-rest-security-hibernate'
+  persistence = 'hibernate'
+  dataBase = 'mysql'
+  logging = 'y'
+  rest = 'y'
+  security = 'jwt'
+  javaMainClass = "com.rico.hibernate.Application"
+}
+
+dependencies {
+    implementation project(':common')
+}

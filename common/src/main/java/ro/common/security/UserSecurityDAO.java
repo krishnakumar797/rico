@@ -1,3 +1,4 @@
+/* Licensed under Apache-2.0 */
 package ro.common.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,16 @@ import ro.common.hibernate.GenericDAO;
 @ConditionalOnBean(name = "hConfig")
 public class UserSecurityDAO implements UserDAO {
 
-    @Autowired
-    private GenericDAO genericDAO;
+  @Autowired private GenericDAO genericDAO;
 
-    @Override
-    public User getUserByUsername(String username) {
-        String hql = "from User where username = ?";
-        return genericDAO.getEntityByStringParam(hql, username);
-    }
+  @Override
+  public User getUserByUsername(String username) {
+    String hql = "from User where userName = ?";
+    return genericDAO.getEntityByStringParam(hql, username);
+  }
+
+  @Override
+  public User registerUser(User user) {
+    return genericDAO.saveEntity(user);
+  }
 }

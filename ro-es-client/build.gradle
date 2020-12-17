@@ -1,7 +1,8 @@
 appConfig {
-  search = 'y'
-  logging = 'y'
-  javaMainClass = "com.rico.es.Application"
+    appName = 'ro-es-client'
+    search = 'y'
+    logging = 'y'
+    javaMainClass = "com.rico.es.Application"
 }
 
 dependencies {

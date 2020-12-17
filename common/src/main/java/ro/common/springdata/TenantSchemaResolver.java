@@ -2,7 +2,6 @@
 package ro.common.springdata;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-
 import ro.common.utils.AppContext;
 
 /**

@@ -1,8 +1,8 @@
+/* Licensed under Apache-2.0 */
 package ro.common.hibernate;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;

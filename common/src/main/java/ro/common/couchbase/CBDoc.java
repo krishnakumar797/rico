@@ -1,12 +1,11 @@
 /* Licensed under Apache-2.0 */
 package ro.common.couchbase;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.core.mapping.id.GeneratedValue;
 import org.springframework.data.couchbase.core.mapping.id.GenerationStrategy;
-
-import lombok.Getter;
-import lombok.Setter;
 import ro.common.utils.Doc;
 
 /**

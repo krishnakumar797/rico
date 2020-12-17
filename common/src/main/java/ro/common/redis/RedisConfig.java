@@ -1,8 +1,8 @@
 /* Licensed under Apache-2.0 */
 package ro.common.redis;
 
+import io.lettuce.core.ReadFrom;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -16,8 +16,6 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-
-import io.lettuce.core.ReadFrom;
 
 /**
  * Default configuration class for Redis

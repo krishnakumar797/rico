@@ -10,7 +10,6 @@ import ro.common.utils.Doc;
  *
  * @author r.krishnakumar
  */
-
 @Data
 @NonFinal
 public abstract class CommonDTO implements Doc {}

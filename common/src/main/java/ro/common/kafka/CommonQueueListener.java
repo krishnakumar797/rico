@@ -3,6 +3,7 @@ package ro.common.kafka;
 
 import com.esotericsoftware.kryo.kryo5.Kryo;
 import com.google.protobuf.InvalidProtocolBufferException;
+import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,6 @@ import org.springframework.kafka.listener.ConsumerSeekAware;
 import ro.common.exception.QueueException;
 import ro.common.exception.QueueInitException;
 import ro.common.generated.MessageProtoOuterClass.MessageProto;
-
-import java.util.Map;
 
 /**
  * Abstract Common listener class for kafka topics

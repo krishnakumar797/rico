@@ -1,7 +1,8 @@
 appConfig {
-  keyvaluestore = 'y'
-  logging = 'y'
-  javaMainClass = "com.rico.redis.Application"
+    appName = 'ro-redis'
+    keyvaluestore = 'y'
+    logging = 'y'
+    javaMainClass = "com.rico.redis.Application"
 }
 
 dependencies {

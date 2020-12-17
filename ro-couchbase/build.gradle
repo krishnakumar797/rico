@@ -1,7 +1,8 @@
 appConfig {
-  dataBase = 'couchbase'
-  logging = 'y'
-  javaMainClass = "com.rico.couchbase.Application"
+    appName = 'ro-couchbase'
+    dataBase = 'couchbase'
+    logging = 'y'
+    javaMainClass = "com.rico.couchbase.Application"
 }
 
 dependencies {

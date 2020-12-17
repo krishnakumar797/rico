@@ -1,16 +1,15 @@
+/* Licensed under Apache-2.0 */
 package ro.common.hibernate;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.Transformers;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.StringUtils;
-
 import ro.common.utils.Utils;
 
 /**

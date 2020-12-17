@@ -2,15 +2,12 @@
 package ro.common.springdata;
 
 import java.util.HashSet;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
-
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import lombok.extern.log4j.Log4j2;
 import ro.common.utils.AppContext;
 
 /**

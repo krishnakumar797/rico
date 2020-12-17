@@ -1,8 +1,9 @@
 appConfig {
-  persistence = 'springData'
-  dataBase = 'mysql'
-  logging = 'y'
-  javaMainClass = "com.rico.springdata.SpringDataApplication"
+    appName = 'ro-monitoring'
+    persistence = 'springData'
+    dataBase = 'mysql'
+    logging = 'y'
+    javaMainClass = "com.rico.springdata.SpringDataApplication"
 }
 
 dependencies {

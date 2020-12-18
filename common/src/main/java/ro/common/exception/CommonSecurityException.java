@@ -3,6 +3,7 @@ package ro.common.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import ro.common.utils.Utils;
 
 /**
@@ -10,7 +11,7 @@ import ro.common.utils.Utils;
  *
  * @author krishna
  */
-public class CommonSecurityException extends Exception {
+public class CommonSecurityException extends AuthenticationException {
   private final String code;
   private final String correlationId;
   private final HttpStatus status;

@@ -14,13 +14,11 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpInputMessage;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -51,10 +49,6 @@ import ro.common.utils.Utils;
 @Log4j2
 public class CommonControllerAdvice extends ResponseEntityExceptionHandler
     implements RequestBodyAdvice {
-
-  private final Pattern errorCodePattern = Pattern.compile(CommonErrorCodes.ERRORCODE_PATTERN);
-
-  private final Pattern numberPattern = Pattern.compile("\\d+");
 
   /**
    * Handle method argument not valid violation exception.
@@ -190,33 +184,8 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
       final HttpStatus status,
       final WebRequest request) {
     final String correlationId = this.getCorrelationIdFromHeader(headers);
-    final CommonErrorResponse error = this.prepareErrorResponse(status, errorCode, correlationId);
+    final CommonErrorResponse error = Utils.prepareErrorResponse(status, errorCode, correlationId);
     return this.handleExceptionInternal(e, error, headers, status, request);
-  }
-
-  /**
-   * Prepare ErrorResponse object for the generated Exception.
-   *
-   * @param status - the HttpStatus
-   * @param errorCode - the error code for the particular exception
-   * @param correlationId - the correlation id
-   * @return ErrorResponse - the error response
-   */
-  private CommonErrorResponse prepareErrorResponse(
-      final HttpStatus status, final String errorCode, final String correlationId) {
-    HttpStatus resStatus = status;
-    String resErrorCode = errorCode;
-    if (errorCode == null
-        || errorCode.isEmpty()
-        || (!this.errorCodePattern.matcher(errorCode).matches()
-            && !this.numberPattern.matcher(errorCode).matches())) {
-      // if there error code is equal to internal error code or does  then return internal
-      // server error
-      resStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-      resErrorCode = CommonErrorCodes.E_GEN_INTERNAL_ERR;
-    }
-    return new CommonErrorResponse(
-        Integer.toString(resStatus.value()), this.generateErrorCode(resErrorCode), correlationId);
   }
 
   /**
@@ -239,7 +208,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
       errorCode = violation.getMessage();
     }
     final CommonErrorResponse error =
-        this.prepareErrorResponse(HttpStatus.BAD_REQUEST, errorCode, correlationId);
+        Utils.prepareErrorResponse(HttpStatus.BAD_REQUEST, errorCode, correlationId);
     HttpHeaders responseHeaders = new HttpHeaders();
     responseHeaders.set(
         Utils.CORRELATION_ID, error.getCorrelationId() != null ? error.getCorrelationId() : null);
@@ -261,7 +230,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
   @ExceptionHandler(CommonRestException.class)
   public ResponseEntity<CommonErrorResponse> handleCustomException(final CommonRestException ce) {
     final CommonErrorResponse error =
-        this.prepareErrorResponse(
+        Utils.prepareErrorResponse(
             ce.getStatus(),
             ce.getCode(),
             ce.getCorrelationId() != null ? ce.getCorrelationId() : null);
@@ -276,10 +245,10 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
   }
 
   /**
-   * Exception Handler for Security Exceptions.
+   * Exception Handler for web Security Exceptions.
    *
    * @param io the IOException
-   * @return ResponseEntity<ErrorResponse> with the error response for CommonRestException
+   * @return ResponseEntity<ErrorResponse> with the error response for CommonSecurityException
    */
   @ResponseBody
   @ExceptionHandler(IOException.class)
@@ -288,7 +257,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
     if (io.getCause() instanceof CommonSecurityException) {
       CommonSecurityException cse = (CommonSecurityException) io.getCause();
       error =
-          this.prepareErrorResponse(
+          Utils.prepareErrorResponse(
               cse.getStatus(),
               cse.getCode(),
               cse.getCorrelationId() != null ? cse.getCorrelationId() : null);
@@ -302,6 +271,57 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
       return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+//  /**
+//   * Exception Handler for REST Security Exceptions.
+//   *
+//   * @param cse the CommonSecurityException
+//   * @return ResponseEntity<ErrorResponse> with the error response for CommonSecurityException
+//   */
+//  @ResponseBody
+//  @ExceptionHandler(CommonSecurityException.class)
+//  public ResponseEntity<CommonErrorResponse> handleCustomSecurityException(
+//      final CommonSecurityException cse) {
+//    CommonErrorResponse error = new CommonErrorResponse();
+//    error =
+//        this.prepareErrorResponse(
+//            cse.getStatus(),
+//            cse.getCode(),
+//            cse.getCorrelationId() != null ? cse.getCorrelationId() : null);
+//    HttpHeaders responseHeaders = new HttpHeaders();
+//    responseHeaders.set(
+//        Utils.CORRELATION_ID, cse.getCorrelationId() != null ? cse.getCorrelationId() : null);
+//    try {
+//      return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
+//    } catch (final HttpStatusCodeException | NumberFormatException exception) {
+//      return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//  }
+
+//  /**
+//   * Exception Handler for REST Security Exceptions.
+//   *
+//   * @param ase the AuthenticationException
+//   * @return ResponseEntity<ErrorResponse> with the error response for CommonSecurityException
+//   */
+//  @ResponseBody
+//  @ExceptionHandler(AuthenticationException.class)
+//  public ResponseEntity<CommonErrorResponse> handleCustomSecurityException(
+//          final AuthenticationException ase, HttpRequest request) {
+//    HttpHeaders headers = request.getHeaders();
+//    String correlationId = null != headers ? headers.getFirst(Utils.CORRELATION_ID) : null;
+//    CommonErrorResponse error = new CommonErrorResponse();
+//    error =
+//            this.prepareErrorResponse(
+//                    HttpStatus.UNAUTHORIZED, CommonErrorCodes.E_HTTP_FORBIDDEN_ACCESS, correlationId);
+//    HttpHeaders responseHeaders = new HttpHeaders();
+//    responseHeaders.set(Utils.CORRELATION_ID, correlationId);
+//    try {
+//      return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
+//    } catch (final HttpStatusCodeException | NumberFormatException exception) {
+//      return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//  }
 
   /**
    * Exception Handler for unhandled Exceptions for API requests.
@@ -317,7 +337,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     final String correlationId = request.getHeader(Utils.CORRELATION_ID);
     final CommonErrorResponse error =
-        this.prepareErrorResponse(
+        Utils.prepareErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR, CommonErrorCodes.E_GEN_INTERNAL_ERR, correlationId);
     HttpHeaders responseHeaders = new HttpHeaders();
     responseHeaders.set(
@@ -342,7 +362,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
     error.setStatus(Integer.toString(HttpStatus.BAD_REQUEST.value()));
     if (fieldErrors != null && !fieldErrors.isEmpty()) {
       final String errorCode = fieldErrors.get(0).getDefaultMessage();
-      error.setErrorCode(this.generateErrorCode(errorCode));
+      error.setErrorCode(Utils.generateErrorCode(errorCode));
     }
     return error;
   }
@@ -354,16 +374,6 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
    */
   private String getCorrelationIdFromHeader(HttpHeaders headers) {
     return headers.getFirst(Utils.CORRELATION_ID);
-  }
-
-  /**
-   * Method to generate error code
-   *
-   * @param errorCode
-   * @return
-   */
-  private String generateErrorCode(String errorCode) {
-    return "ERR-RICO-" + errorCode;
   }
 
   /** The default implementation returns the body that was passed in. */

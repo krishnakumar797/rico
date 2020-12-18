@@ -1,8 +1,13 @@
 /* Licensed under Apache-2.0 */
 package ro.common.utils;
 
+import org.springframework.http.HttpStatus;
+import ro.common.rest.CommonErrorCodes;
+import ro.common.rest.CommonErrorResponse;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Common Utils
@@ -82,6 +87,7 @@ public class Utils {
   public static final String HEADER_STRING = "Authorization";
   public static String SECRET = new String();
   public static Long EXPIRATION_TIME = 0l;
+  public static String AUTHORITIES_KEY = "Authorities";
 
   public static String dataBaseType;
 
@@ -94,4 +100,42 @@ public class Utils {
 
   public static final String CORRELATION_ID = "correlation-id";
 
+  public static final Pattern errorCodePattern =
+      Pattern.compile(CommonErrorCodes.ERRORCODE_PATTERN);
+
+  public static final Pattern numberPattern = Pattern.compile("\\d+");
+
+  /**
+   * Method to generate error code
+   *
+   * @param errorCode
+   * @return
+   */
+  public static String generateErrorCode(String errorCode) {
+    return "ERR-RICO-" + errorCode;
+  }
+  /**
+   * Prepare ErrorResponse object for the generated Exception.
+   *
+   * @param status - the HttpStatus
+   * @param errorCode - the error code for the particular exception
+   * @param correlationId - the correlation id
+   * @return ErrorResponse - the error response
+   */
+  public static CommonErrorResponse prepareErrorResponse(
+      final HttpStatus status, final String errorCode, final String correlationId) {
+    HttpStatus resStatus = status;
+    String resErrorCode = errorCode;
+    if (errorCode == null
+        || errorCode.isEmpty()
+        || (!errorCodePattern.matcher(errorCode).matches()
+            && !numberPattern.matcher(errorCode).matches())) {
+      // if there error code is equal to internal error code or does  then return internal
+      // server error
+      resStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+      resErrorCode = CommonErrorCodes.E_GEN_INTERNAL_ERR;
+    }
+    return new CommonErrorResponse(
+        Integer.toString(resStatus.value()), generateErrorCode(resErrorCode), correlationId);
+  }
 }

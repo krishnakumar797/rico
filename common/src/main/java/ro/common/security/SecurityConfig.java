@@ -5,10 +5,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -31,6 +33,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 @DependsOn({"log", "security"})
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @AutoConfigurationPackage
 @ComponentScan
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -39,12 +42,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired MyCustomLogoutSuccessHandler logOutHandler;
 
+  @Autowired RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
+  @Autowired RestAccessDeniedHandler restAccessDeniedHandler;
+
   @Autowired UserLoginService userLoginService;
 
   @Value("#{${ro.security.rules}}")
   private Map<String, String> rules;
 
-  @Value("#{${ro.security.defaultTargets: {ADMIN: /welcome}}}")
+  @Value("#{${ro.security.defaultTargets: {ADMIN: '/welcome'}}}")
   private Map<String, String> defaultTargets;
 
   @Value("${ro.security.loginPage:DEFAULT}")
@@ -68,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Value("${ro.security.jwt.secret:DEFAULT}")
   private String jwtSecret;
 
-  @Value("${ro.security.jwt.tokenExpiry:0l}")
+  @Value("${ro.security.jwt.tokenExpiryInMin:0}")
   private Integer tokenExpiryInMin;
 
   @PostConstruct
@@ -91,6 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
 
     http.csrf().disable();
+    http.cors();
     ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry permissions =
         http.authorizeRequests();
     for (Map.Entry<String, String> entry : rules.entrySet()) {
@@ -119,10 +127,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           .logoutUrl(logoutUrl)
           .logoutSuccessHandler(logOutHandler);
     } else if (Utils.securityType.contentEquals(Utils.SECURITY_TYPE.JWT.type)) {
-      http.cors();
       permissions
           .and()
-          .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+          .exceptionHandling()
+          .authenticationEntryPoint(restAuthenticationEntryPoint)
+          .and()
+          .exceptionHandling()
+          .accessDeniedHandler(restAccessDeniedHandler)
+          .and()
+          .addFilter(
+              new JwtAuthenticationFilter(
+                  authenticationManager(), loginProcessingUrl, usernameParam, passwordParam))
           .addFilter(new JwtAuthorizationFilter(authenticationManager()))
           .sessionManagement()
           .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -140,14 +155,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   /**
-   * Cors configuration
+   * Cors configuration. By default all enabled
    *
    * @return
    */
   @Bean
-  @Conditional(OnJwtCondition.class)
   public CorsConfigurationSource corsConfigurationSource() {
-    System.out.println("Cors configured");
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
     return source;
@@ -173,15 +186,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
     authProvider.setUserDetailsService(userLoginService);
     authProvider.setPasswordEncoder(passwordEncoder());
+    authProvider.setHideUserNotFoundExceptions(false) ;
     return authProvider;
-  }
-
-  /** Custom condition class */
-  private class OnJwtCondition implements Condition {
-    @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-      System.out.println("SECURITY TYPE " + Utils.securityType);
-      return Utils.securityType.contentEquals(Utils.SECURITY_TYPE.JWT.type);
-    }
   }
 }

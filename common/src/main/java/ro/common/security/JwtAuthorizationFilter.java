@@ -2,8 +2,10 @@ package ro.common.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -12,7 +14,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static ro.common.utils.Utils.*;
 
@@ -52,14 +56,18 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     if (token == null) {
       return null;
     }
-    // parse the token.
-    String user =
+    // Parse the token.
+    DecodedJWT decodedJWT =
         JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
             .build()
-            .verify(token.replace(TOKEN_PREFIX, ""))
-            .getSubject();
+            .verify(token.replace(TOKEN_PREFIX, ""));
+    String user = decodedJWT.getSubject();
+    final Collection authorities =
+        Arrays.stream(decodedJWT.getClaims().get(AUTHORITIES_KEY).asString().split(","))
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
     if (user != null) {
-      return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+      return new UsernamePasswordAuthenticationToken(user, null, authorities);
     }
     return null;
   }

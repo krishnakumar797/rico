@@ -121,7 +121,6 @@ public class CommonConfig implements ApplicationContextAware {
     }
     Utils.persistenceType = this.persistenceType;
     Utils.securityType = this.securityTypeEnabled;
-    System.out.println("HERE AT SECURITY CONFIG");
     return true;
   }
 

@@ -33,7 +33,7 @@ import javax.annotation.PostConstruct;
 @Configuration
 @DependsOn({"log", "security"})
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 @AutoConfigurationPackage
 @ComponentScan
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -186,7 +186,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
     authProvider.setUserDetailsService(userLoginService);
     authProvider.setPasswordEncoder(passwordEncoder());
-    authProvider.setHideUserNotFoundExceptions(false) ;
+    authProvider.setHideUserNotFoundExceptions(false);
     return authProvider;
   }
 }

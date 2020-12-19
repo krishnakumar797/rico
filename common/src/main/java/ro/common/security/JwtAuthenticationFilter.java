@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
       String passwordParameter) {
     this.authenticationManager = authenticationManager;
     setFilterProcessesUrl(loginProcessingUrl);
+    setAuthenticationFailureHandler(new JwtAuthenticationFailureHandler());
     this.usernameParameter = usernameParameter;
     this.passwordParameter = passwordParameter;
   }
@@ -87,6 +88,4 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             .sign(HMAC512(SECRET.getBytes()));
     res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
   }
-
-  protected void onAuthenticationFailure() {}
 }

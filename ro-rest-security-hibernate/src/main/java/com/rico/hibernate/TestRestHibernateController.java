@@ -5,6 +5,8 @@ import com.rico.hibernate.domain.NamesOnly;
 import com.rico.hibernate.domain.PersonDTO;
 import com.rico.hibernate.entity.Person;
 import com.rico.hibernate.services.PersonService;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +14,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ro.common.exception.CommonRestException;
@@ -83,6 +86,38 @@ public class TestRestHibernateController {
     try {
       return dtoConverter.convertToDto(
           service.getPersonById(Long.parseLong(id)).orElse(new Person()), PersonDTO.class);
+    } catch (GenericServiceException e) {
+      log.error("Test Rest error ", e);
+      throw new CommonRestException(
+          CommonErrorCodes.E_GEN_INTERNAL_ERR,
+          headers,
+          HttpStatusCode.SERVICE_UNAVAILABLE,
+          e.getMessage(),
+          e);
+    }
+  }
+
+  /**
+   * Get method to retrieve all persons
+   *
+   * @param headers
+   * @return
+   * @throws CommonRestException
+   */
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+  @GetMapping(
+      value = "/admin",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<PersonDTO> getAllPerson(@RequestHeader HttpHeaders headers)
+      throws CommonRestException {
+    try {
+      List<PersonDTO> personDTOS = new ArrayList<>();
+      List<Person> personList = service.getAllPersonAsPages(0);
+      for (Person person : personList) {
+        personDTOS.add(dtoConverter.convertToDto(person, PersonDTO.class));
+      }
+      return personDTOS;
     } catch (GenericServiceException e) {
       log.error("Test Rest error ", e);
       throw new CommonRestException(

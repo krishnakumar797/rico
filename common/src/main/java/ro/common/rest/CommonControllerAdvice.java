@@ -1,24 +1,19 @@
 /* Licensed under Apache-2.0 */
 package ro.common.rest;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -38,6 +33,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import ro.common.exception.CommonRestException;
 import ro.common.exception.CommonSecurityException;
 import ro.common.utils.Utils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Common class that provides centralized exception handling across the controller methods
@@ -210,8 +213,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
     final CommonErrorResponse error =
         Utils.prepareErrorResponse(HttpStatus.BAD_REQUEST, errorCode, correlationId);
     HttpHeaders responseHeaders = new HttpHeaders();
-    responseHeaders.set(
-        Utils.CORRELATION_ID, error.getCorrelationId() != null ? error.getCorrelationId() : null);
+    responseHeaders.set(Utils.CORRELATION_ID, error.getCorrelationId());
     try {
       return new ResponseEntity<>(
           error, responseHeaders, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
@@ -235,8 +237,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
             ce.getCode(),
             ce.getCorrelationId() != null ? ce.getCorrelationId() : null);
     HttpHeaders responseHeaders = new HttpHeaders();
-    responseHeaders.set(
-        Utils.CORRELATION_ID, ce.getCorrelationId() != null ? ce.getCorrelationId() : null);
+    responseHeaders.set(Utils.CORRELATION_ID, ce.getCorrelationId());
     try {
       return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
     } catch (final HttpStatusCodeException | NumberFormatException exception) {
@@ -262,8 +263,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
               cse.getCode(),
               cse.getCorrelationId() != null ? cse.getCorrelationId() : null);
       HttpHeaders responseHeaders = new HttpHeaders();
-      responseHeaders.set(
-          Utils.CORRELATION_ID, cse.getCorrelationId() != null ? cse.getCorrelationId() : null);
+      responseHeaders.set(Utils.CORRELATION_ID, cse.getCorrelationId());
     }
     try {
       return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
@@ -272,56 +272,31 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
     }
   }
 
-//  /**
-//   * Exception Handler for REST Security Exceptions.
-//   *
-//   * @param cse the CommonSecurityException
-//   * @return ResponseEntity<ErrorResponse> with the error response for CommonSecurityException
-//   */
-//  @ResponseBody
-//  @ExceptionHandler(CommonSecurityException.class)
-//  public ResponseEntity<CommonErrorResponse> handleCustomSecurityException(
-//      final CommonSecurityException cse) {
-//    CommonErrorResponse error = new CommonErrorResponse();
-//    error =
-//        this.prepareErrorResponse(
-//            cse.getStatus(),
-//            cse.getCode(),
-//            cse.getCorrelationId() != null ? cse.getCorrelationId() : null);
-//    HttpHeaders responseHeaders = new HttpHeaders();
-//    responseHeaders.set(
-//        Utils.CORRELATION_ID, cse.getCorrelationId() != null ? cse.getCorrelationId() : null);
-//    try {
-//      return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
-//    } catch (final HttpStatusCodeException | NumberFormatException exception) {
-//      return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//  }
-
-//  /**
-//   * Exception Handler for REST Security Exceptions.
-//   *
-//   * @param ase the AuthenticationException
-//   * @return ResponseEntity<ErrorResponse> with the error response for CommonSecurityException
-//   */
-//  @ResponseBody
-//  @ExceptionHandler(AuthenticationException.class)
-//  public ResponseEntity<CommonErrorResponse> handleCustomSecurityException(
-//          final AuthenticationException ase, HttpRequest request) {
-//    HttpHeaders headers = request.getHeaders();
-//    String correlationId = null != headers ? headers.getFirst(Utils.CORRELATION_ID) : null;
-//    CommonErrorResponse error = new CommonErrorResponse();
-//    error =
-//            this.prepareErrorResponse(
-//                    HttpStatus.UNAUTHORIZED, CommonErrorCodes.E_HTTP_FORBIDDEN_ACCESS, correlationId);
-//    HttpHeaders responseHeaders = new HttpHeaders();
-//    responseHeaders.set(Utils.CORRELATION_ID, correlationId);
-//    try {
-//      return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
-//    } catch (final HttpStatusCodeException | NumberFormatException exception) {
-//      return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//  }
+  /**
+   * Exception Handler for REST Security Exceptions.
+   *
+   * @param ade the AccessDeniedException
+   * @return ResponseEntity<ErrorResponse> with the error response for CommonSecurityException
+   */
+  @ResponseBody
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<CommonErrorResponse> handleCustomSecurityException(
+      final AccessDeniedException ade) {
+    HttpServletRequest request =
+        ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    final String correlationId = request.getHeader(Utils.CORRELATION_ID);
+    CommonErrorResponse error = new CommonErrorResponse();
+    error =
+        Utils.prepareErrorResponse(
+            HttpStatus.UNAUTHORIZED, CommonErrorCodes.E_HTTP_FORBIDDEN_ACCESS, correlationId);
+    HttpHeaders responseHeaders = new HttpHeaders();
+    responseHeaders.set(Utils.CORRELATION_ID, correlationId);
+    try {
+      return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
+    } catch (final HttpStatusCodeException | NumberFormatException exception) {
+      return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   /**
    * Exception Handler for unhandled Exceptions for API requests.
@@ -340,8 +315,7 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
         Utils.prepareErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR, CommonErrorCodes.E_GEN_INTERNAL_ERR, correlationId);
     HttpHeaders responseHeaders = new HttpHeaders();
-    responseHeaders.set(
-        Utils.CORRELATION_ID, error.getCorrelationId() != null ? error.getCorrelationId() : null);
+    responseHeaders.set(Utils.CORRELATION_ID, error.getCorrelationId());
     try {
       return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
     } catch (final HttpStatusCodeException | NumberFormatException exception) {

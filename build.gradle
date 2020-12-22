@@ -15,10 +15,10 @@ plugins {
 	id 'com.google.cloud.tools.jib' version '2.6.0' apply false
 	id 'de.jjohannes.extra-java-module-info' version '0.3' apply false
 	id "org.beryx.jlink" version "2.22.3" apply false
-	id 'com.rico.platform.rocommon' version '2.0' apply false
-	id 'com.rico.platform.roapp' version '2.0' apply false
-	id 'com.rico.platform.dockerRun' version '2.0' apply false
-	id 'com.rico.platform.swarm' version '2.0' apply false
+	id 'com.rico.platform.rocommon' version '3.0' apply false
+	id 'com.rico.platform.roapp' version '3.0' apply false
+	id 'com.rico.platform.dockerRun' version '3.0' apply false
+	id 'com.rico.platform.swarm' version '3.0' apply false
 }
 
 ext {

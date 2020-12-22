@@ -30,7 +30,7 @@ import ro.common.utils.AppContext;
 import ro.common.utils.Utils;
 
 /**
- * JPA configuration params
+ * Spring data JPA configuration params
  *
  * @author r.krishnakumar
  */

@@ -34,10 +34,10 @@ public class RedisConfig {
   @Value("${ro.keyvaluestore.standalone}")
   private boolean standalone;
 
-  @Value("${ro.keyvaluestore.master: 'mymaster'}")
+  @Value("${ro.keyvaluestore.master:'mymaster'}")
   private String master;
 
-  @Value("${ro.keyvaluestore.password: ''}")
+  @Value("${ro.keyvaluestore.password:''}")
   private String password;
 
   /**

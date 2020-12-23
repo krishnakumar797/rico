@@ -33,10 +33,10 @@ public class CommonConfig implements ApplicationContextAware {
   @Value("${persistence:''}")
   private String persistenceType;
 
-  @Value("${multitenancy.enabled: 'n'}")
+  @Value("${multitenancy.enabled:n}")
   private String isMultitenancyEnabled;
 
-  @Value("${security.enabled: 'n'}")
+  @Value("${security.enabled:n}")
   private String securityTypeEnabled;
 
   @Override

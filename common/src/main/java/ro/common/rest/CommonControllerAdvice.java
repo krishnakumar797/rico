@@ -273,32 +273,6 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
   }
 
   /**
-   * Exception Handler for REST Security Exceptions.
-   *
-   * @param ade the AccessDeniedException
-   * @return ResponseEntity<ErrorResponse> with the error response for CommonSecurityException
-   */
-  @ResponseBody
-  @ExceptionHandler(AccessDeniedException.class)
-  public ResponseEntity<CommonErrorResponse> handleCustomSecurityException(
-      final AccessDeniedException ade) {
-    HttpServletRequest request =
-        ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-    final String correlationId = request.getHeader(Utils.CORRELATION_ID);
-    CommonErrorResponse error = new CommonErrorResponse();
-    error =
-        Utils.prepareErrorResponse(
-            HttpStatus.UNAUTHORIZED, CommonErrorCodes.E_HTTP_FORBIDDEN_ACCESS, correlationId);
-    HttpHeaders responseHeaders = new HttpHeaders();
-    responseHeaders.set(Utils.CORRELATION_ID, correlationId);
-    try {
-      return new ResponseEntity<>(error, HttpStatus.valueOf(Integer.parseInt(error.getStatus())));
-    } catch (final HttpStatusCodeException | NumberFormatException exception) {
-      return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  /**
    * Exception Handler for unhandled Exceptions for API requests.
    *
    * @param e - Any Exception

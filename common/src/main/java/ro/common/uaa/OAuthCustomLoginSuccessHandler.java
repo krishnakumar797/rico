@@ -1,11 +1,6 @@
 /* Licensed under Apache-2.0 */
-package ro.common.security;
+package ro.common.uaa;
 
-import java.io.IOException;
-import java.util.Collection;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,19 +13,24 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import ro.common.exception.CommonSecurityException;
 import ro.common.rest.CommonErrorCodes;
+import ro.common.security.User;
+import ro.common.security.UserLoginService;
 import ro.common.utils.HttpStatusCode;
 import ro.common.utils.Utils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Collection;
+
 /**
- * Custom Login success handler
+ * Custom OAuth Login success handler
  *
  * @author r.krishnakumar
  */
-@Component
 @Log4j2
-public class MyCustomLoginSuccessHandler implements AuthenticationSuccessHandler {
-
-  @Autowired private UserLoginService userLoginService;
+public class OAuthCustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
   private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -38,25 +38,6 @@ public class MyCustomLoginSuccessHandler implements AuthenticationSuccessHandler
   public void onAuthenticationSuccess(
       HttpServletRequest request, HttpServletResponse response, Authentication authentication)
       throws IOException {
-    HttpSession session = request.getSession();
-    if (authentication != null
-        && authentication.isAuthenticated()
-        && authentication.getName() != null) {
-      User user;
-      try {
-        user = (User) userLoginService.loadUserByUsername(authentication.getName());
-        session.setAttribute("userid", user.getId());
-      } catch (UsernameNotFoundException e) {
-        CommonSecurityException cse =
-            new CommonSecurityException(
-                CommonErrorCodes.E_HTTP_UN_AUTHORIZED,
-                request.getHeader(Utils.CORRELATION_ID),
-                HttpStatusCode.UNAUTHORIZED,
-                e.getMessage(),
-                e);
-        throw new IOException(cse);
-      }
-    }
     handle(request, response, authentication);
     clearAuthenticationAttributes(request);
   }
@@ -86,10 +67,7 @@ public class MyCustomLoginSuccessHandler implements AuthenticationSuccessHandler
     if (count == 1) {
       return defaultUrl;
     }
-    if (count > 1) {
-      return "/";
-    }
-    throw new IllegalStateException();
+    return "/";
   }
 
   private void clearAuthenticationAttributes(HttpServletRequest request) {

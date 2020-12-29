@@ -1,18 +1,20 @@
 //Adding rico plugin
-pluginManagement {
-	resolutionStrategy {
-		eachPlugin {
-			if (requested.id.namespace == 'com.rico.platform') {
-				useModule('com.rico.platform:ro-app:3.0')
-			}
-		}
-	}
-	repositories {
-		maven {
-			url 'https://dl.bintray.com/tp/rico'
-		}
-		gradlePluginPortal()
-	}
-}
+//pluginManagement {
+//	resolutionStrategy {
+//		eachPlugin {
+//			if (requested.id.namespace == 'com.rico.platform') {
+//				useModule('com.rico.platform:ro-app:3.0')
+//			}
+//		}
+//	}
+//	repositories {
+//		maven {
+//			url 'https://dl.bintray.com/tp/rico'
+//		}
+//		gradlePluginPortal()
+//	}
+//}
 
-include "common", "ro-es-client", "ro-grpc-server", "ro-grpc-client", "ro-springdata", "ro-couchbase", "ro-redis", "ro-kafka", "ro-hibernate", "ro-hazelcast", "ro-rest", "ro-web-security-hibernate", "ro-web-security-springdata", "ro-rest-security-hibernate"
+includeBuild 'E:\\ProjectFolders\\Intellij2020-jdk11\\ro-app'
+
+include "common", "ro-es-client", "ro-grpc-server", "ro-grpc-client", "ro-springdata", "ro-couchbase", "ro-redis", "ro-kafka", "ro-hibernate", "ro-hazelcast", "ro-rest", "ro-web-security-hibernate", "ro-web-security-springdata", "ro-rest-security-hibernate", "ro-uaa-web-springdata"

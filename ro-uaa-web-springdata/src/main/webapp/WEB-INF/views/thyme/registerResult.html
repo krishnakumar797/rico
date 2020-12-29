@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register Success</title>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+<div class="card">
+    <div class="card-body">
+        <span th:if="${result == 'success'}">
+        Registration Success <a class="btn btn-primary" href="/login" role="button">Login</a>
+        </span>
+        <span th:if="${result == 'failed'}">
+            <p th:text="${message}" />
+        Registration Failed <a class="btn btn-primary" href="/register" role="button">Try Again</a>
+        </span>
+    </div>
+</div>
+</body>
+</html>

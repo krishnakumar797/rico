@@ -43,7 +43,7 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
- * UAA configuration params
+ * UAA client configuration params
  *
  * @author r.krishnakumar
  */

@@ -1,0 +1,24 @@
+appConfig {
+  appName = "ro-rest-springdata-docker"
+  rest = 'y'
+  persistence = 'springData'
+  dataBase = 'mysql'
+  logging = 'y'
+  devTools = 'y'
+  docker {
+    imageName = 'ro-rest-springdata-docker'
+    containerName = 'ro-rest-springdata-docker-container'
+    hostPortMapping {
+      hostRestPort = 8080
+    }
+    volumeMapping {
+      volumeName = "testvol"
+      containerPath = "/testvol"
+    }
+    environment = ['MYVAR1': 'MYVALUE1', 'MYVAR2': 'MYVALUE2']
+  }
+  javaMainClass = "com.rico.rest.Application"
+}
+dependencies {
+    implementation project(':common')
+}

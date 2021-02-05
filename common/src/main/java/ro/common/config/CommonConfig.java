@@ -104,9 +104,8 @@ public class CommonConfig implements ApplicationContextAware {
   public boolean isMultitenancyEnabled() {
     if ("y".contentEquals(this.isMultitenancyEnabled)) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**

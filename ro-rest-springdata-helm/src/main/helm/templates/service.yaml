@@ -1,0 +1,47 @@
+apiVersion: v2
+kind: Service
+metadata:
+  name: {{ include "service.name" . }}
+  labels:
+    name: {{ include "service.name" . }}
+    chart: {{ include "chart.name" . }}
+    instance: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: {{ .Values.target.portName }}
+      protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.target.portName }}
+  selector:
+      name: {{ include "pod.name" . }}
+      instance: {{ .Release.Name }}
+      
+---
+
+apiVersion: v2
+kind: Service
+metadata:
+  name: {{ include "db.service" . }}
+  labels:
+    name: {{ include "db.service" . }}
+    chart: {{ include "chart.name" . }}
+    instance: {{ .Release.Name }}
+spec:
+  ports:
+  - protocol: TCP
+    port: {{ .Values.database.port }}
+    targetPort: {{ .Values.database.port }}
+
+---
+
+apiVersion: v2
+kind: Endpoints
+metadata:
+  name: {{ include "db.service" . }}
+subsets:
+  - addresses:
+      - ip: {{ .Values.database.host }}
+    ports:
+      - port: {{ .Values.database.port }}
+

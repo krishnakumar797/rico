@@ -1,0 +1,54 @@
+apiVersion: v2
+kind: Deployment
+metadata:
+  name: {{ include "deployment.name" . }}
+  labels:
+    name: {{ include "deployment.name" . }}
+    chart: {{ include "chart.name" . }}
+    instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      name: {{ include "pod.name" . }}
+      instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        name: {{ include "pod.name" . }}
+        instance: {{ .Release.Name }}
+    spec:
+      imagePullSecrets:
+      - name: {{ .Values.imageCredentials.name }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - name: {{ .Values.target.portName }}
+            containerPort: {{ .Values.target.port }}
+            protocol: TCP
+         {{- if eq .Values.build.env "local" }}   
+          - name: debug
+            containerPort: {{ .Values.debug.port }}
+            protocol: TCP
+         {{- end }}
+        env:
+          {{- if eq .Values.build.env "local" }}
+          - name: DEBUG
+            value: "true"
+          {{- end }}
+          - name: spring_profiles_active
+            value: {{ .Values.build.env }}
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: {{ .Values.target.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: {{ .Values.target.port }}
+          initialDelaySeconds: 30
+          periodSeconds: 5

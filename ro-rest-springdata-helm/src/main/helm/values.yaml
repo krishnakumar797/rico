@@ -1,0 +1,68 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+namespace: ${namespace}
+
+#imagename and imagetag is preconfigured, it will be the same as the docker build
+image:
+  repository: ${imageName}
+  tag: ${imageTag}
+  pullPolicy: ${imagePullPolicy}
+
+#For ACR Image credentials
+imageCredentials:
+  name: azure-image-credentials
+  registry: default.azurecr.io
+  username: default
+  password: default
+
+#Build env is preconfigured depends on the --buildEnv commandline argument for the gradle command
+build:
+  env: ${buildEnv}
+
+#Default service type
+#restPort and debugPort is preconfigured
+service:
+  type: ClusterIP
+  port: ${restPort}
+  name: ${serviceName}
+  
+target:
+  port: ${restPort}
+  portName: ${portName}
+ 
+debug:
+  port: ${debugPort}
+
+#For database access
+database:
+  host: ${dbHostAddr}
+  port: ${dbPort}
+  service:
+    name: ${dbServiceName}
+
+#For local testing
+spec:
+  nodeport:
+    debug: 30003
+    rest: 30002
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

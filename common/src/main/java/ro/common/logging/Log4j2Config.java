@@ -91,8 +91,6 @@ public class Log4j2Config {
    * application root package names and any logging outside the the declared packages will be
    * handled by the spring boot default logger
    *
-   * @param name
-   * @param builder
    * @return
    */
   private void createConfiguration() {

@@ -1,0 +1,29 @@
+{{- if eq .Values.build.env "local" -}}
+apiVersion: v2
+kind: Service
+metadata:
+  name: {{ include "local.service.name" . }}
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: {{ .Values.target.port }}
+    nodePort: {{ .Values.spec.nodeport.rest }}
+  selector:
+    cmks.das/name: {{ include "pod.name" . }}
+
+---
+
+apiVersion: v2
+kind: Service
+metadata:
+  name: {{ include "local.debug.service.name" . }}
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: {{ .Values.debug.port }}
+    nodePort: {{ .Values.spec.nodeport.debug }}
+  selector:
+    cmks.das/name: {{ include "pod.name" . }}
+{{- end }}

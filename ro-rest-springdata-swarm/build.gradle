@@ -1,0 +1,30 @@
+appConfig {
+  appName = "ro-rest-springdata-swarm"
+  rest = 'y'
+  persistence = 'springData'
+  dataBase = 'mysql'
+  logging = 'y'
+  devTools = 'y'
+  docker {
+    imageName = 'ro-rest-springdata-swarm'
+    containerName = 'ro-rest-springdata-swarm-container'
+    hostPortMapping {
+      hostRestPort = 8080
+    }
+    volumeMapping {
+      volumeName = "testvol"
+      containerPath = "/testvol"
+    }
+    swarm {
+      serviceName = 'ro-rest-springdata-swarm-service'
+      swarmMode = REPLICATED_MODE
+      replicas = 1
+      rollbackOnUpdateFailure = true
+    }
+    environment = ['MYVAR1': 'MYVALUE1', 'MYVAR2': 'MYVALUE2']
+  }
+  javaMainClass = "com.rico.rest.Application"
+}
+dependencies {
+    implementation project(':common')
+}

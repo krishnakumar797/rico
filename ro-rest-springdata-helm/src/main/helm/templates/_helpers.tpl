@@ -81,6 +81,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a default fully qualified target port name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "target.port.name" -}}
+{{- printf "%s" .Values.target.portName | trunc 15 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified service cassandra name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}

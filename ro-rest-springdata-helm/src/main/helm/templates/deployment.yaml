@@ -1,4 +1,4 @@
-apiVersion: v2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "deployment.name" . }}
@@ -25,7 +25,7 @@ spec:
         image: {{ .Values.image.repository }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-          - name: {{ .Values.target.portName }}
+          - name: {{ include "target.port.name" . }}
             containerPort: {{ .Values.target.port }}
             protocol: TCP
          {{- if eq .Values.build.env "local" }}   
@@ -44,11 +44,11 @@ spec:
           httpGet:
             path: /actuator/health
             port: {{ .Values.target.port }}
-          initialDelaySeconds: 30
+          initialDelaySeconds: 60
           periodSeconds: 5
         readinessProbe:
           httpGet:
             path: /actuator/health
             port: {{ .Values.target.port }}
-          initialDelaySeconds: 30
+          initialDelaySeconds: 60
           periodSeconds: 5

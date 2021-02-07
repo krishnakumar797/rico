@@ -1,4 +1,4 @@
-apiVersion: v2
+apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "service.name" . }}
@@ -9,17 +9,17 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: {{ .Values.target.portName }}
+    - name: {{ include "target.port.name" . }}
       protocol: TCP
       port: {{ .Values.service.port }}
-      targetPort: {{ .Values.target.portName }}
+      targetPort: {{ include "target.port.name" . }}
   selector:
       name: {{ include "pod.name" . }}
       instance: {{ .Release.Name }}
       
 ---
 
-apiVersion: v2
+apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "db.service" . }}
@@ -35,7 +35,7 @@ spec:
 
 ---
 
-apiVersion: v2
+apiVersion: v1
 kind: Endpoints
 metadata:
   name: {{ include "db.service" . }}

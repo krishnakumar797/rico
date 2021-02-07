@@ -5,17 +5,16 @@ appConfig {
   dataBase = 'mysql'
   logging = 'y'
   devTools = 'y'
+  monitoring = 'y'
   docker {
     imageName = 'ro-rest-springdata-helm'
     containerName = 'ro-rest-springdata-helm-container'
-    hostPortMapping {
-      hostRestPort = 8080
-    }
     helmChart {
       chartName = 'ro-rest-springdata-helm'
       chartVersion = '1.0.1'
       values = ['imagePullPolicy': 'Always', 'namespace': 'default', 'serviceName': 'helm-test-service',
-                'dbHostAddr':'192.168.1.101', 'dbPort':'3306', 'dbServiceName':'db-service', 'portName': 'ro-rest-springdata-helm-port']
+                'dbHostAddr':'192.168.1.101', 'dbPort':'3306', 'dbServiceName':'db-service',
+                'portName': 'ro-rest-springdata-helm-port']
     }
   }
   javaMainClass = "com.rico.rest.Application"

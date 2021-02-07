@@ -111,7 +111,6 @@ public class SpringDataConfig {
         ds.setDriverClassName("org.postgresql.Driver");
         ds.setJdbcUrl("jdbc:postgresql://" + host + ":5432/" + databaseName);
       }
-      ds.addDataSourceProperty("useSSL", false);
       ds.setMaximumPoolSize(12);
       ds.setUsername(userName);
       ds.setPassword(password);
@@ -119,6 +118,8 @@ public class SpringDataConfig {
       ds.addDataSourceProperty("prepStmtCacheSize", 250);
       ds.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
       ds.addDataSourceProperty("useServerPrepStmts", true);
+      ds.addDataSourceProperty("useSSL", false);
+      ds.addDataSourceProperty("allowPublicKeyRetrieval",true);
       return ds;
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialise datasource");

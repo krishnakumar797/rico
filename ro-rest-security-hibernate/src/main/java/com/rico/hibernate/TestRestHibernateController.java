@@ -5,7 +5,6 @@ import com.rico.hibernate.domain.NamesOnly;
 import com.rico.hibernate.domain.PersonDTO;
 import com.rico.hibernate.entity.Person;
 import com.rico.hibernate.services.PersonService;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;

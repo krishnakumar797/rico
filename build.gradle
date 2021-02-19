@@ -8,10 +8,10 @@ buildscript {
 
 plugins {
 	id 'io.spring.dependency-management' version "1.0.8.RELEASE" apply false
-	id 'org.springframework.boot' version "2.2.4.RELEASE" apply false
+	id 'org.springframework.boot' version "2.4.2" apply false
 	id "name.remal.sonarlint" version "1.1.4" apply false
 	id "io.freefair.lombok" version "5.1.0" apply false
-	id "com.diffplug.gradle.spotless" version "3.28.0" apply false
+	id "com.diffplug.spotless" version "5.10.1" apply false
 	id 'com.google.cloud.tools.jib' version '2.7.1' apply false
 	id 'org.unbroken-dome.helm' version '1.6.0' apply false
 	id 'org.unbroken-dome.helm-commands' version '1.6.0' apply false
@@ -50,7 +50,7 @@ subprojects {
 	apply plugin: 'name.remal.sonarlint'
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'io.freefair.lombok'
-	apply plugin: 'com.diffplug.gradle.spotless'
+	apply plugin: 'com.diffplug.spotless'
 
 	// Applying sonarlint plugin
 	sonarlint {
@@ -92,7 +92,7 @@ subprojects {
 
 	dependencyManagement {
 		imports {
-			mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE")
+			mavenBom("org.springframework.boot:spring-boot-dependencies:2.4.2")
 		}
 	}
 }

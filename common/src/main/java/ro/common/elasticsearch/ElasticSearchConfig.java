@@ -1,21 +1,19 @@
 /* Licensed under Apache-2.0 */
 package ro.common.elasticsearch;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ElasticsearchEntityMapper;
-import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.http.HttpHeaders;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Default configuration class for ElasticSearch
@@ -34,19 +32,6 @@ public class ElasticSearchConfig extends AbstractElasticsearchConfiguration {
 
   @Value("${ro.search.password}")
   private String elasticPassword;
-
-  /*
-   * Custom entity based mapper
-   */
-  @Bean
-  @Override
-  public EntityMapper entityMapper() {
-    ElasticsearchEntityMapper entityMapper =
-        new ElasticsearchEntityMapper(
-            elasticsearchMappingContext(), new DefaultConversionService());
-    entityMapper.setConversions(elasticsearchCustomConversions());
-    return entityMapper;
-  }
 
   /** Creating elastic search client */
   @Override

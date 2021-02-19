@@ -25,13 +25,13 @@ public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
   /**
    * Method to save an ElasticSearch document
    *
-   * @param p
+   * @param v
    * @return
    */
-  public String saveVehicle(Vehicle p) {
-    String id = save(p);
-    log.info("SAVED VEHICLE SUCCESSFULLY " + id);
-    return id;
+  public String saveVehicle(Vehicle v) {
+    v = save(v);
+    log.info("SAVED VEHICLE SUCCESSFULLY " + v.getId());
+    return v.getId();
   }
 
   /**
@@ -52,7 +52,7 @@ public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
             Criteria.where(yearFieldName)
                 .between(fromYear, toYear)
                 .and(Criteria.where(fieldName).contains(fieldValue)));
-    List<Vehicle> v = queryForList(cq, Vehicle.class, true);
+    List<Vehicle> v = queryForObjectsInAllIndex(cq, Vehicle.class);
     if (v == null || v.isEmpty()) {
       log.info("NO RESULTS FOUND");
       return;
@@ -90,7 +90,7 @@ public class VehicleSearchService extends CommonSearchRepository<Vehicle> {
     //				.must(QueryBuilders.matchPhraseQuery(fieldName, fieldValue)).should(rangeQuery);
 
     StringQuery sq = new StringQuery(boolQuery.toString());
-    List<Vehicle> v = queryForList(sq, Vehicle.class, true);
+    List<Vehicle> v = queryForObjectsInAllIndex(sq, Vehicle.class);
     if (v == null || v.isEmpty()) {
       log.info("NO RESULTS FOUND");
       return;

@@ -4,6 +4,8 @@ package ro.common.elasticsearch;
 import org.springframework.data.annotation.Id;
 import ro.common.utils.Doc;
 
+import javax.persistence.Index;
+
 /**
  * Abstract class for ES Documents
  *

@@ -4,7 +4,7 @@ package com.rico.couchbase.repository;
 import com.rico.couchbase.documents.User;
 import java.util.List;
 import org.springframework.data.couchbase.core.query.N1qlSecondaryIndexed;
-import org.springframework.data.couchbase.core.query.Query;
+import org.springframework.data.couchbase.repository.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

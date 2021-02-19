@@ -1,15 +1,14 @@
 /* Licensed under Apache-2.0 */
 package ro.common.couchbase;
 
-import com.couchbase.client.java.env.CouchbaseEnvironment;
-import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
-import org.springframework.data.couchbase.repository.support.IndexManager;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Couchbase configuration params
@@ -21,7 +20,7 @@ import org.springframework.data.couchbase.repository.support.IndexManager;
 public class CouchBaseConfig extends AbstractCouchbaseConfiguration {
 
   @Value("${ro.db.hosts}")
-  private List<String> host;
+  private List<String> hosts;
 
   @Value("${ro.db.bucket}")
   private String bucketName;
@@ -33,8 +32,20 @@ public class CouchBaseConfig extends AbstractCouchbaseConfiguration {
   private String password;
 
   @Override
-  public List<String> getBootstrapHosts() {
-    return host;
+  public String getConnectionString() {
+    List<String> hostArray = hosts.stream().map(hostName -> "couchbase://"+hostName).collect(Collectors.toList());
+    String.join(",",hostArray.toArray(String[]::new));
+    return null;
+  }
+
+  @Override
+  public String getUserName() {
+    return userName;
+  }
+
+  @Override
+  public String getPassword() {
+    return password;
   }
 
   @Bean("bucketName")
@@ -43,24 +54,4 @@ public class CouchBaseConfig extends AbstractCouchbaseConfiguration {
     return bucketName;
   }
 
-  @Override
-  public String getUsername() {
-    return userName;
-  }
-
-  @Override
-  public String getBucketPassword() {
-    return password;
-  }
-
-  @Override
-  public IndexManager indexManager() {
-    return new IndexManager(true, true, true);
-  }
-
-  /** Default properties to be configured */
-  @Override
-  protected CouchbaseEnvironment getEnvironment() {
-    return DefaultCouchbaseEnvironment.builder().bootstrapHttpDirectPort(8091).build();
-  }
 }

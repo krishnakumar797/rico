@@ -8,7 +8,6 @@ import ro.common.hibernate.HibernateConfig;
 import ro.common.logging.Log4j2Config;
 import ro.common.rest.RestConfig;
 import ro.common.security.SecurityConfig;
-import ro.common.web.WebConfig;
 
 /** Configuration manager to add configurations for external systems */
 @Configuration

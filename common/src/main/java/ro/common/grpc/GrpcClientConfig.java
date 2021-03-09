@@ -3,9 +3,11 @@ package ro.common.grpc;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.EqualsAndHashCode;
+import lombok.extern.log4j.Log4j2;
 import net.devh.boot.grpc.client.channelfactory.GrpcChannelConfigurer;
 import net.devh.boot.grpc.client.config.GrpcChannelProperties;
 import net.devh.boot.grpc.client.config.GrpcChannelsProperties;
@@ -23,6 +25,7 @@ import org.springframework.context.annotation.DependsOn;
  */
 @EqualsAndHashCode(callSuper = true)
 @Configuration
+@Log4j2
 @DependsOn("log")
 public class GrpcClientConfig extends GrpcChannelsProperties {
 
@@ -42,13 +45,19 @@ public class GrpcClientConfig extends GrpcChannelsProperties {
     targets.forEach(
         (targetName, targetAddress) -> {
           GrpcChannelProperties properties = new GrpcChannelProperties();
-          properties.setAddress(serviceType + "://" + targetAddress);
+          if (serviceType.contentEquals("static")) {
+            properties.setAddress(serviceType + "://" + targetAddress);
+          } else {
+              properties.setAddress(serviceType + ":/" + targetAddress);
+          }
           properties.setNegotiationType(NegotiationType.PLAINTEXT);
           getClient().put(targetName, properties);
         });
     return (channelBuilder, name) -> {
       if (channelBuilder instanceof NettyChannelBuilder) {
         ((NettyChannelBuilder) channelBuilder)
+            .enableRetry()
+            .maxRetryAttempts(5)
             .keepAliveTime(30, TimeUnit.SECONDS)
             .keepAliveTimeout(5, TimeUnit.SECONDS);
       }

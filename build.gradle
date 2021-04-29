@@ -18,10 +18,10 @@ plugins {
 	id 'org.unbroken-dome.helm-releases' version '1.6.0' apply false
 	id 'de.jjohannes.extra-java-module-info' version '0.3' apply false
 	id "org.beryx.jlink" version "2.22.3" apply false
-	id 'com.github.rico.common' version '3.5' apply false
-	id 'com.github.rico.ro-app' version '3.5' apply false
-	id 'com.github.rico.dockerRun' version '3.5' apply false
-	id 'com.github.rico.swarm' version '3.5' apply false
+	id 'com.github.rico.common' version '3.6' apply false
+	id 'com.github.rico.ro-app' version '3.6' apply false
+	id 'com.github.rico.dockerRun' version '3.6' apply false
+	id 'com.github.rico.swarm' version '3.6' apply false
 }
 
 ext {

@@ -13,6 +13,7 @@ import javax.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,7 +33,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class EntityDoc implements Doc {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(generator = "key-generator")
+  @GenericGenerator(name = "key-generator",
+          strategy = "ro.common.utils.RandomGenerator")
   private Long id;
 
   @Version private Long version;

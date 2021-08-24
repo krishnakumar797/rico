@@ -134,7 +134,7 @@ public class Utils {
       // if there error code is equal to internal error code or does  then return internal
       // server error
       resStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-      resErrorCode = CommonErrorCodes.E_GEN_INTERNAL_ERR;
+      resErrorCode = CommonErrorCodes.E_HTTP_INTERNAL_SERVER_ERROR;
     }
     return new CommonErrorResponse(
         Integer.toString(resStatus.value()), generateErrorCode(resErrorCode), correlationId);

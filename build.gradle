@@ -13,15 +13,12 @@ plugins {
 	id "io.freefair.lombok" version "5.1.0" apply false
 	id "com.diffplug.spotless" version "5.10.1" apply false
 	id 'com.google.cloud.tools.jib' version '2.7.1' apply false
-	id 'org.unbroken-dome.helm' version '1.6.0' apply false
-	id 'org.unbroken-dome.helm-commands' version '1.6.0' apply false
-	id 'org.unbroken-dome.helm-releases' version '1.6.0' apply false
 	id 'de.jjohannes.extra-java-module-info' version '0.3' apply false
 	id "org.beryx.jlink" version "2.22.3" apply false
-	id 'com.github.rico.common' version '3.6' apply false
-	id 'com.github.rico.ro-app' version '3.6' apply false
-	id 'com.github.rico.dockerRun' version '3.6' apply false
-	id 'com.github.rico.swarm' version '3.6' apply false
+	id 'com.github.rico.common' version '3.7' apply false
+	id 'com.github.rico.ro-app' version '3.7' apply false
+	id 'com.github.rico.dockerRun' version '3.7' apply false
+	id 'com.github.rico.swarm' version '3.7' apply false
 }
 
 ext {

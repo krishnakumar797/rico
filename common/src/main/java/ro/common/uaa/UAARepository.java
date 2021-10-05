@@ -1,3 +1,4 @@
+/* Licensed under Apache-2.0 */
 package ro.common.uaa;
 
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -9,7 +10,8 @@ public class UAARepository {
   private ClientRegistrationRepository clientRegistrationRepository;
 
   public UAARepository(
-      OAuth2AuthorizedClientRepository authorizedClientRepository,  ClientRegistrationRepository clientRegistrationRepository) {
+      OAuth2AuthorizedClientRepository authorizedClientRepository,
+      ClientRegistrationRepository clientRegistrationRepository) {
     this.authorizedClientRepository = authorizedClientRepository;
     this.clientRegistrationRepository = clientRegistrationRepository;
   }

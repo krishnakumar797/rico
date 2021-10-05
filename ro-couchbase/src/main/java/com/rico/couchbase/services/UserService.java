@@ -1,28 +1,22 @@
 /* Licensed under Apache-2.0 */
 package com.rico.couchbase.services;
 
-import com.couchbase.client.core.message.kv.subdoc.multi.Lookup;
-import com.couchbase.client.core.message.kv.subdoc.multi.Mutation;
-import com.couchbase.client.java.document.json.JsonObject;
-import com.couchbase.client.java.query.N1qlQuery;
-import com.couchbase.client.java.query.N1qlQueryResult;
-import com.couchbase.client.java.subdoc.DocumentFragment;
+import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.kv.LookupInResult;
+import com.couchbase.client.java.kv.MutateInResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rico.couchbase.documents.Address;
 import com.rico.couchbase.documents.User;
 import com.rico.couchbase.repository.UserRepository;
-import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ro.common.couchbase.CommonCBService;
 
 /**
  * Sample Service for Couchbase user document
@@ -30,13 +24,17 @@ import org.springframework.stereotype.Service;
  * @author r.krishnakumar
  */
 @Service
-public class UserService {
+public class UserService extends CommonCBService<User> {
 
   @Autowired private UserRepository userRepository;
 
   @Autowired private String bucketName;
 
   @Autowired private ObjectMapper objectMapper;
+
+  public UserService(@Autowired CouchbaseTemplate couchbaseTemplate, @Autowired Cluster cluster) {
+    super(couchbaseTemplate, cluster);
+  }
 
   /**
    * Sample service method to retrieve user by first name
@@ -103,7 +101,6 @@ public class UserService {
   /**
    * Sample service method to retrieve users by location either by home address or business
    *
-   * @param accountBalance
    * @return
    */
   public List<User> getUsersByLocation(String location) {
@@ -111,34 +108,34 @@ public class UserService {
   }
 
   /**
-   * Sample service method to retrieve firstName of all users
+   * Sample service method to retrieve firstName of all users To-Do : Need rework
    *
    * @return
    */
-  public Optional<List<JsonNode>> getUserNamesByCountry(String country) {
-    String statement =
-        "SELECT firstName, lastName FROM "
-            + bucketName
-            + " WHERE "
-            + userRepository.getDocumentFilter(User.class)
-            + " and address.country like $name";
-    JsonObject namedParams = JsonObject.create().put("name", country + "%");
-    N1qlQuery query = N1qlQuery.parameterized(statement, namedParams);
-    N1qlQueryResult result = userRepository.execute(query);
-    List<JsonNode> jsonNode =
-        result.allRows().stream()
-            .map(
-                row -> {
-                  try {
-                    return objectMapper.readTree(row.value().toString());
-                  } catch (IOException e) {
-                    return null;
-                  }
-                })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    return Optional.ofNullable(jsonNode);
-  }
+  //  public Optional<List<JsonNode>> getUserNamesByCountry(String country) {
+  //    String statement =
+  //        "SELECT firstName, lastName FROM "
+  //            + bucketName
+  //            + " WHERE "
+  //            + userRepository.getDocumentFilter(User.class)
+  //            + " and address.country like $name";
+  //    JsonObject namedParams = JsonObject.create().put("name", country + "%");
+  //    N1qlQuery query = N1qlQuery.parameterized(statement, namedParams);
+  //    N1qlQueryResult result = userRepository.execute(query);
+  //    List<JsonNode> jsonNode =
+  //        result.allRows().stream()
+  //            .map(
+  //                row -> {
+  //                  try {
+  //                    return objectMapper.readTree(row.value().toString());
+  //                  } catch (IOException e) {
+  //                    return null;
+  //                  }
+  //                })
+  //            .filter(Objects::nonNull)
+  //            .collect(Collectors.toList());
+  //    return Optional.ofNullable(jsonNode);
+  //  }
 
   /**
    * Sample service method to update the pincode by docId
@@ -148,24 +145,21 @@ public class UserService {
    * @return
    */
   public String updatePinCodeById(String docId, String value) {
-    DocumentFragment<Mutation> fragment =
-        userRepository.updateSubDocument(docId, "address.pinCode", value);
-    return fragment.status("address.pinCode").toString();
+    MutateInResult fragment = updateSubDocument(User.class, docId, "address.pinCode", value);
+    return fragment.contentAs(0, String.class);
   }
 
   /**
    * Sample service method to update the pincode by docId
    *
    * @param docId
-   * @param value
    * @return
    * @throws JsonProcessingException
    * @throws JsonMappingException
    */
   public Address getAddressByUserId(String docId) throws JsonProcessingException {
-    DocumentFragment<Lookup> fragment = userRepository.retrieveSubDocument(docId, "address");
-    JsonObject jsonObject = (JsonObject) fragment.content("address");
-    return objectMapper.readerFor(Address.class).readValue(jsonObject.toString());
+    LookupInResult fragment = retrieveSubDocument(User.class, docId, "address");
+    return fragment.contentAs(0, Address.class);
   }
 
   /**

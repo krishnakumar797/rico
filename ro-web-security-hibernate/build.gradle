@@ -1,12 +1,13 @@
 appConfig {
   appName ='ro-web-security-hibernate'
-  persistence = 'hibernate'
-  dataBase = 'mysql'
+  persistence = ['hibernate']
+  dataBase = ['mysql']
   logging = 'y'
   rest = 'y'
   web = 'y'
-  security = 'form'
+  security = ['form']
   javaMainClass = "com.rico.hibernate.Application"
+  beanValidation = 'y'
 }
 
 dependencies {

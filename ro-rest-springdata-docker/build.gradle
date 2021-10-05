@@ -1,8 +1,8 @@
 appConfig {
   appName = "ro-rest-springdata-docker"
   rest = 'y'
-  persistence = 'springData'
-  dataBase = 'mysql'
+  persistence = ['springData']
+  dataBase = ['mysql']
   logging = 'y'
   devTools = 'y'
   docker {

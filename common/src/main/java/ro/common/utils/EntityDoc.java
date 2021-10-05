@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
@@ -34,8 +33,7 @@ public abstract class EntityDoc implements Doc {
 
   @Id
   @GeneratedValue(generator = "key-generator")
-  @GenericGenerator(name = "key-generator",
-          strategy = "ro.common.utils.RandomGenerator")
+  @GenericGenerator(name = "key-generator", strategy = "ro.common.utils.RandomGenerator")
   private Long id;
 
   @Version private Long version;

@@ -1,14 +1,13 @@
 /* Licensed under Apache-2.0 */
 package ro.common.couchbase;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Couchbase configuration params
@@ -33,8 +32,9 @@ public class CouchBaseConfig extends AbstractCouchbaseConfiguration {
 
   @Override
   public String getConnectionString() {
-    List<String> hostArray = hosts.stream().map(hostName -> "couchbase://"+hostName).collect(Collectors.toList());
-    String.join(",",hostArray.toArray(String[]::new));
+    List<String> hostArray =
+        hosts.stream().map(hostName -> "couchbase://" + hostName).collect(Collectors.toList());
+    String.join(",", hostArray.toArray(String[]::new));
     return null;
   }
 
@@ -53,5 +53,4 @@ public class CouchBaseConfig extends AbstractCouchbaseConfiguration {
   public String getBucketName() {
     return bucketName;
   }
-
 }

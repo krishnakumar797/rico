@@ -1,5 +1,10 @@
+/* Licensed under Apache-2.0 */
 package ro.common.uaa;
 
+import static org.springframework.security.oauth2.jose.jws.SignatureAlgorithm.*;
+
+import java.time.Duration;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -16,11 +21,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.web.client.RestOperations;
-
-import java.time.Duration;
-import java.util.Map;
-
-import static org.springframework.security.oauth2.jose.jws.SignatureAlgorithm.*;
 
 /**
  * UAA resource server configuration params

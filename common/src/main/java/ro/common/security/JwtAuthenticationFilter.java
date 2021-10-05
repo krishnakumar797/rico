@@ -1,8 +1,20 @@
+/* Licensed under Apache-2.0 */
 package ro.common.security;
+
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import static ro.common.utils.Utils.*;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.stream.Collectors;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,18 +25,6 @@ import ro.common.exception.CommonSecurityException;
 import ro.common.rest.CommonErrorCodes;
 import ro.common.utils.HttpStatusCode;
 import ro.common.utils.Utils;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.stream.Collectors;
-
-import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-import static ro.common.utils.Utils.*;
 
 /**
  * JWT Authentication filter
@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     } catch (Exception e) {
       CommonSecurityException cse =
           new CommonSecurityException(
-              CommonErrorCodes.E_HTTP_UN_AUTHORIZED,
+              CommonErrorCodes.E_HTTP_UNAUTHORIZED,
               req.getHeader(Utils.CORRELATION_ID),
               HttpStatusCode.UNAUTHORIZED,
               e.getMessage(),

@@ -1,11 +1,12 @@
 appConfig {
   appName = "ro-rest-springdata-helm"
   rest = 'y'
-  persistence = 'springData'
-  dataBase = 'mysql'
+  persistence = ['springData']
+  dataBase = ['mysql']
   logging = 'y'
   devTools = 'y'
   monitoring = 'y'
+  beanValidation = 'y'
   docker {
     imageName = 'ro-rest-springdata-helm'
     containerName = 'ro-rest-springdata-helm-container'

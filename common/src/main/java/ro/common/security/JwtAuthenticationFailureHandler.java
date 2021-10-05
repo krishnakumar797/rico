@@ -1,6 +1,12 @@
+/* Licensed under Apache-2.0 */
 package ro.common.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.OutputStream;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -8,12 +14,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import ro.common.rest.CommonErrorCodes;
 import ro.common.rest.CommonErrorResponse;
 import ro.common.utils.Utils;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 
 /** Custom JwtAuthenticationFailureHandler */
 public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {

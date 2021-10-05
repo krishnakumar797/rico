@@ -1,4 +1,20 @@
 appConfig {
     autoGenerateJavaClassForProtoFiles = 'y'
+    rest = 'y'
+    security = ['form', 'jwt']
+    persistence = ['springData', 'hibernate']
+    dataBase = ['couchbase', 'postgres', 'mysql']
+    logging = 'y'
+    grpc = 'y'
+    keyvaluestore = 'y'
+    modelMapper = 'y'
+    search = 'y'
+    cache = 'y'
+    queue = 'y'
+    beanValidation = 'y'
+    identityManager {
+        idmName = UAA
+    }
+    web = 'y'
 }
 

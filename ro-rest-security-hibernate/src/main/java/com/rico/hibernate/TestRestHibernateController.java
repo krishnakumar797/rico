@@ -56,7 +56,7 @@ public class TestRestHibernateController {
     } catch (GenericServiceException e) {
       log.error("Test Rest error ", e);
       throw new CommonRestException(
-          CommonErrorCodes.E_GEN_INTERNAL_ERR,
+          CommonErrorCodes.E_HTTP_INTERNAL_SERVER_ERROR,
           headers,
           HttpStatusCode.SERVICE_UNAVAILABLE,
           e.getMessage(),
@@ -88,7 +88,7 @@ public class TestRestHibernateController {
     } catch (GenericServiceException e) {
       log.error("Test Rest error ", e);
       throw new CommonRestException(
-          CommonErrorCodes.E_GEN_INTERNAL_ERR,
+          CommonErrorCodes.E_HTTP_INTERNAL_SERVER_ERROR,
           headers,
           HttpStatusCode.SERVICE_UNAVAILABLE,
           e.getMessage(),
@@ -120,7 +120,7 @@ public class TestRestHibernateController {
     } catch (GenericServiceException e) {
       log.error("Test Rest error ", e);
       throw new CommonRestException(
-          CommonErrorCodes.E_GEN_INTERNAL_ERR,
+          CommonErrorCodes.E_HTTP_INTERNAL_SERVER_ERROR,
           headers,
           HttpStatusCode.SERVICE_UNAVAILABLE,
           e.getMessage(),
@@ -150,7 +150,7 @@ public class TestRestHibernateController {
     } catch (GenericServiceException e) {
       log.error("Test Rest error ", e);
       throw new CommonRestException(
-          CommonErrorCodes.E_GEN_INTERNAL_ERR,
+          CommonErrorCodes.E_HTTP_INTERNAL_SERVER_ERROR,
           headers,
           HttpStatusCode.SERVICE_UNAVAILABLE,
           e.getMessage(),

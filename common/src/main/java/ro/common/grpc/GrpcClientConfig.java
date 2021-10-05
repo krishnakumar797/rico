@@ -3,7 +3,6 @@ package ro.common.grpc;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
-
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.EqualsAndHashCode;
@@ -48,7 +47,7 @@ public class GrpcClientConfig extends GrpcChannelsProperties {
           if (serviceType.contentEquals("static")) {
             properties.setAddress(serviceType + "://" + targetAddress);
           } else {
-              properties.setAddress(serviceType + ":/" + targetAddress);
+            properties.setAddress(serviceType + ":/" + targetAddress);
           }
           properties.setNegotiationType(NegotiationType.PLAINTEXT);
           getClient().put(targetName, properties);

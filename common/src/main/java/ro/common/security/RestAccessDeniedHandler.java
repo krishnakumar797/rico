@@ -1,23 +1,20 @@
+/* Licensed under Apache-2.0 */
 package ro.common.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.OutputStream;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 import ro.common.rest.CommonErrorCodes;
 import ro.common.rest.CommonErrorResponse;
 import ro.common.utils.Utils;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 
 /** Access denied handler for custom error message */
 @Component
@@ -33,7 +30,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
     String correlationId = request.getHeader(Utils.CORRELATION_ID);
     error =
         Utils.prepareErrorResponse(
-            HttpStatus.FORBIDDEN, CommonErrorCodes.E_HTTP_FORBIDDEN_ACCESS, correlationId);
+            HttpStatus.FORBIDDEN, CommonErrorCodes.E_HTTP_FORBIDDEN, correlationId);
     response.setHeader(Utils.CORRELATION_ID, correlationId);
     OutputStream out = response.getOutputStream();
     ObjectMapper mapper = new ObjectMapper();

@@ -119,7 +119,7 @@ public class SpringDataConfig {
       ds.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
       ds.addDataSourceProperty("useServerPrepStmts", true);
       ds.addDataSourceProperty("useSSL", false);
-      ds.addDataSourceProperty("allowPublicKeyRetrieval",true);
+      ds.addDataSourceProperty("allowPublicKeyRetrieval", true);
       return ds;
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialise datasource");

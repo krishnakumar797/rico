@@ -1,7 +1,7 @@
 appConfig {
   appName = 'ro-hazelcast'
-  persistence = 'hibernate'
-  dataBase = 'mysql'
+  persistence = ['hibernate']
+  dataBase = ['mysql']
   cache = 'y'
   logging = 'y'
   javaMainClass = "com.rico.hibernate.Application"

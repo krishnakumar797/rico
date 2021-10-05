@@ -2,8 +2,8 @@ appConfig {
   appName = "ro-web-security-springdata"
   rest = 'y'
   web = 'y'
-  persistence = 'springData'
-  dataBase = 'mysql'
+  persistence = ['springData']
+  dataBase = ['mysql']
   logging = 'y'
   devTools = 'y'
   identityManager {
@@ -12,6 +12,7 @@ appConfig {
     uaaResourceServer = 'y'
   }
   javaMainClass = "com.rico.security.Application"
+  beanValidation = 'y'
 }
 dependencies {
     implementation project(':common')

@@ -1,7 +1,8 @@
 appConfig {
-  persistence = 'springData'
-  dataBase = 'mysql'
+  persistence = ['springData']
+  dataBase = ['mysql']
   logging = 'y'
+  unitTest = 'y'
   javaMainClass = "com.rico.springdata.SpringDataApplication"
 }
 

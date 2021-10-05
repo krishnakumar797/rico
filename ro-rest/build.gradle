@@ -1,10 +1,11 @@
 appConfig {
   appName = "ro-rest"
   rest = 'y'
-  persistence = 'springData'
-  dataBase = 'mysql'
+  persistence = ['springData']
+  dataBase = ['mysql']
   logging = 'y'
   devTools = 'y'
+  beanValidation = 'y'
   javaMainClass = "com.rico.rest.Application"
 }
 dependencies {

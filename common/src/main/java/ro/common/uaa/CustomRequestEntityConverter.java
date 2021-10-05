@@ -1,3 +1,4 @@
+/* Licensed under Apache-2.0 */
 package ro.common.uaa;
 
 import org.springframework.core.convert.converter.Converter;

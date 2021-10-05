@@ -1,4 +1,4 @@
 
-//includeBuild 'E:\\ProjectFolders\\Intellij2020-jdk11\\ro-app'
+includeBuild 'E:\\ProjectFolders\\Intellij2020-jdk11\\ro-app'
 
 include "common", "ro-es-client", "ro-grpc-server", "ro-grpc-client", "ro-springdata", "ro-couchbase", "ro-redis", "ro-kafka", "ro-hibernate", "ro-hazelcast", "ro-rest", "ro-web-security-hibernate", "ro-web-security-springdata", "ro-rest-security-hibernate", "ro-uaa-web-springdata", "ro-rest-springdata-helm"

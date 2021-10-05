@@ -2,12 +2,13 @@ appConfig {
   appName = "ro-web-security-springdata"
   rest = 'y'
   web = 'y'
-  security = 'form'
-  persistence = 'springData'
-  dataBase = 'mysql'
+  security = ['form']
+  persistence = ['springData']
+  dataBase = ['mysql']
   logging = 'y'
   devTools = 'y'
   javaMainClass = "com.rico.security.Application"
+  beanValidation = 'y'
 }
 dependencies {
     implementation project(':common')

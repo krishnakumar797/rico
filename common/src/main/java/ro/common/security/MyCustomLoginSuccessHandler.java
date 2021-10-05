@@ -49,7 +49,7 @@ public class MyCustomLoginSuccessHandler implements AuthenticationSuccessHandler
       } catch (UsernameNotFoundException e) {
         CommonSecurityException cse =
             new CommonSecurityException(
-                CommonErrorCodes.E_HTTP_UN_AUTHORIZED,
+                CommonErrorCodes.E_HTTP_UNAUTHORIZED,
                 request.getHeader(Utils.CORRELATION_ID),
                 HttpStatusCode.UNAUTHORIZED,
                 e.getMessage(),

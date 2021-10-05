@@ -1,6 +1,6 @@
 appConfig {
     appName = 'ro-couchbase'
-    dataBase = 'couchbase'
+    dataBase = ['couchbase']
     logging = 'y'
     javaMainClass = "com.rico.couchbase.Application"
 }

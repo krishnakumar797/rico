@@ -1,13 +1,13 @@
 /* Licensed under Apache-2.0 */
 package com.rico.couchbase.documents;
 
-import com.couchbase.client.java.repository.annotation.Field;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.core.mapping.Field;
 import ro.common.couchbase.CBDoc;
 
 /**

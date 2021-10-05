@@ -1,6 +1,13 @@
 /* Licensed under Apache-2.0 */
 package ro.common.rest;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.MethodParameter;
@@ -13,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -33,14 +39,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import ro.common.exception.CommonRestException;
 import ro.common.exception.CommonSecurityException;
 import ro.common.utils.Utils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Common class that provides centralized exception handling across the controller methods
@@ -287,7 +285,9 @@ public class CommonControllerAdvice extends ResponseEntityExceptionHandler
     final String correlationId = request.getHeader(Utils.CORRELATION_ID);
     final CommonErrorResponse error =
         Utils.prepareErrorResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR, CommonErrorCodes.E_GEN_INTERNAL_ERR, correlationId);
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            CommonErrorCodes.E_HTTP_INTERNAL_SERVER_ERROR,
+            correlationId);
     HttpHeaders responseHeaders = new HttpHeaders();
     responseHeaders.set(Utils.CORRELATION_ID, error.getCorrelationId());
     try {

@@ -1,7 +1,10 @@
+/* Licensed under Apache-2.0 */
 package ro.common.uaa;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,9 +41,6 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.web.client.RestTemplate;
 import ro.common.utils.Utils;
-
-import javax.annotation.PostConstruct;
-import java.util.*;
 
 /**
  * UAA client configuration params

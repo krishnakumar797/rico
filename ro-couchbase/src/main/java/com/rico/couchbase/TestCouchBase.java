@@ -2,7 +2,6 @@
 package com.rico.couchbase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.rico.couchbase.documents.Accounts;
 import com.rico.couchbase.documents.Address;
 import com.rico.couchbase.documents.Business;
@@ -10,7 +9,6 @@ import com.rico.couchbase.documents.User;
 import com.rico.couchbase.services.UserService;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,14 +113,15 @@ public class TestCouchBase {
     userList.forEach(u -> log.info("USERS RETRIEVED BY LOCATION " + u.getFirstName()));
 
     // Retrieving users names by country
-    Optional<List<JsonNode>> optional = userService.getUserNamesByCountry("England");
-    if (optional.isPresent()) {
-      optional
-          .get()
-          .forEach(node -> log.info("USERNAMES RETRIEVED BY COUNTRY " + node.toPrettyString()));
-    } else {
-      log.warn("NO USERNAMES FOUND FOR THE SPECIFIED COUNTRY");
-    }
+    //    Optional<List<JsonNode>> optional = userService.getUserNamesByCountry("England");
+    //    if (optional.isPresent()) {
+    //      optional
+    //          .get()
+    //          .forEach(node -> log.info("USERNAMES RETRIEVED BY COUNTRY " +
+    // node.toPrettyString()));
+    //    } else {
+    //      log.warn("NO USERNAMES FOUND FOR THE SPECIFIED COUNTRY");
+    //    }
 
     user = !userList.isEmpty() ? userList.get(0) : null;
     if (user != null) {

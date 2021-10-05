@@ -1,14 +1,13 @@
 /* Licensed under Apache-2.0 */
 package ro.common.utils;
 
-import org.springframework.http.HttpStatus;
-import ro.common.rest.CommonErrorCodes;
-import ro.common.rest.CommonErrorResponse;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.springframework.http.HttpStatus;
+import ro.common.rest.CommonErrorCodes;
+import ro.common.rest.CommonErrorResponse;
 
 /**
  * Common Utils
@@ -69,7 +68,7 @@ public class Utils {
     }
   }
 
-  /** Enum for Log levels */
+  /** Enum for Security Types */
   public enum SECURITY_TYPE {
     FORM("form"),
     JWT("jwt");
@@ -146,22 +145,15 @@ public class Utils {
    * @param ip
    * @return
    */
-  public static boolean isValidIPAddress(String ip)
-  {
+  public static boolean isValidIPAddress(String ip) {
 
     // Regex for digit from 0 to 255.
-    String zeroTo255
-            = "(\\d{1,2}|(0|1)\\"
-            + "d{2}|2[0-4]\\d|25[0-5])";
+    String zeroTo255 = "(\\d{1,2}|(0|1)\\" + "d{2}|2[0-4]\\d|25[0-5])";
 
     // Regex for a digit from 0 to 255 and
     // followed by a dot, repeat 4 times.
     // this is the regex to validate an IP address.
-    String regex
-            = zeroTo255 + "\\."
-            + zeroTo255 + "\\."
-            + zeroTo255 + "\\."
-            + zeroTo255;
+    String regex = zeroTo255 + "\\." + zeroTo255 + "\\." + zeroTo255 + "\\." + zeroTo255;
 
     // Compile the ReGex
     Pattern p = Pattern.compile(regex);

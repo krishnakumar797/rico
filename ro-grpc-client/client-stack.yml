@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  grpc-client-service:
+    image: grpc-client:1.0
+    ports:
+      - "8762:8762"
+    networks:
+      - eureka-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+networks:
+  eureka-network:
+    external: true

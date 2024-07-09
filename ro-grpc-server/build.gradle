@@ -2,9 +2,16 @@ appConfig {
     appName = 'ro-grpc-server'
     grpcServer = 'y'
     logging = 'y'
+    rest='y'
+    beanValidation = 'y'
+    modelMapper = 'y'
+    monitoring = 'y'
+    serviceDiscoveryClient = 'consul'
     javaMainClass = "com.rico.grpc.server.Application"
 }
-
+bootJar {
+    archiveFileName = "app.jar"
+}
 dependencies {
     implementation project(':common')
 }

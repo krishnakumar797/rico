@@ -1,0 +1,12 @@
+appConfig {
+  appName = "ro-eureka-server"
+  logging = 'y'
+  serviceDiscoveryServer = 'eureka'
+  javaMainClass = "com.rico.empty.Application"
+}
+bootJar {
+    archiveFileName = "app.jar"
+}
+dependencies {
+    implementation project(':common')
+}

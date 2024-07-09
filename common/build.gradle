@@ -11,6 +11,7 @@ appConfig {
     search = 'y'
     cache = 'y'
     queue = 'y'
+    serviceDiscoveryClient = 'consul'
     beanValidation = 'y'
     identityManager {
         idmName = UAA

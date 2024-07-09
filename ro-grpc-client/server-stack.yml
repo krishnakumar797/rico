@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  grpc-server-service:
+    image: grpc-server:1.0
+    networks:
+      - eureka-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+
+networks:
+  eureka-network:
+    external: true

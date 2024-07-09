@@ -4,7 +4,7 @@ package ro.common.elasticsearch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.elasticsearch.action.support.IndicesOptions;
+import org.springframework.data.elasticsearch.core.query.IndicesOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -93,7 +93,7 @@ public abstract class CommonSearchRepository<T extends ESDoc> {
    * @return
    */
   protected final List<T> queryForObjectsInAllIndex(CriteriaQuery query, Class<T> clazz) {
-    query.setIndicesOptions(IndicesOptions.fromOptions(true, true, true, false));
+    query.setIndicesOptions(IndicesOptions.LENIENT_EXPAND_OPEN);
     List<T> objectLit = new ArrayList<>();
     SearchHits<T> searchHits =
         elasticsearchOperations.search(query, clazz, IndexCoordinates.of("_all"));
@@ -113,7 +113,7 @@ public abstract class CommonSearchRepository<T extends ESDoc> {
    */
   protected final List<T> queryForObjectsInAllIndex(StringQuery query, Class<T> clazz) {
     // Ignoring if the indices not found
-    query.setIndicesOptions(IndicesOptions.fromOptions(true, true, true, false));
+    query.setIndicesOptions(IndicesOptions.LENIENT_EXPAND_OPEN);
     List<T> objectLit = new ArrayList<>();
     SearchHits<T> searchHits =
         elasticsearchOperations.search(query, clazz, IndexCoordinates.of("_all"));

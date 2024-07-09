@@ -1,16 +1,12 @@
 /* Licensed under Apache-2.0 */
-package com.rico.grpc.server;
+package com.rico.eurekaserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
-/**
- * Bootstrap class for GrpcServer test microservice
- *
- * @author r.krishnakumar
- */
-@EnableDiscoveryClient
+/** Bootstrap class for SpringBoot microservice */
+@EnableEurekaServer
 @SpringBootApplication
 public class Application {
 

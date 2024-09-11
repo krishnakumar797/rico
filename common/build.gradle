@@ -19,3 +19,6 @@ appConfig {
     web = 'y'
 }
 
+dependencies {
+    runtimeOnly 'org.apache.logging.log4j:log4j-layout-template-json:2.24.0'
+}

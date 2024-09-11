@@ -43,6 +43,9 @@ public class Log4j2Config {
   @Value("${ro.logging.writeTo:CONSOLE}")
   private String appender;
 
+  @Value("${ro.logging.layout:PATTERN}")
+  private String layout;
+
   private static final String CONSOLE_APPENDER_NAME = "Stdout";
 
   private static final String ROLLINGFILE_APPENDER_NAME = "rolling";
@@ -98,28 +101,32 @@ public class Log4j2Config {
     final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 
     ConfigurationBuilder<BuiltConfiguration> builder =
-        ConfigurationBuilderFactory.newConfigurationBuilder();
+            ConfigurationBuilderFactory.newConfigurationBuilder();
 
     builder.setConfigurationName("Rico");
     // Log level for the internal log4j2 events
     builder.setStatusLevel(Level.ERROR);
 
     LayoutComponentBuilder layoutBuilder = null;
+    if (layout.equals("JSON")) {
+      layoutBuilder = builder.newLayout("JsonTemplateLayout").addAttribute("locationInfoEnabled", true);
+    } else {
     if (supressStackTrace) {
       layoutBuilder =
-          builder
-              .newLayout("PatternLayout")
-              .addAttribute(
-                  "pattern",
-                  "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr{%-5level} %clr{%pid} %clr{---} %clr{[%15.15t]} %clr{%-40.40c{-1}} %clr{:} %msg%throwable{short.message}%n");
+              builder
+                      .newLayout("PatternLayout")
+                      .addAttribute(
+                              "pattern",
+                              "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr{%-5level} %clr{%pid} %clr{---} %clr{[%15.15t]} %clr{%-40.40c{-1}} %clr{:} %msg%throwable{short.message}%n");
     } else {
       layoutBuilder =
-          builder
-              .newLayout("PatternLayout")
-              .addAttribute(
-                  "pattern",
-                  "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr{%-5level} %clr{%pid} %clr{---} %clr{[%15.15t]} %clr{%-40.40c{-1}} %clr{:} %msg%throwable%n");
+              builder
+                      .newLayout("PatternLayout")
+                      .addAttribute(
+                              "pattern",
+                              "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr{%-5level} %clr{%pid} %clr{---} %clr{[%15.15t]} %clr{%-40.40c{-1}} %clr{:} %msg%throwable%n");
     }
+  }
     AppenderComponentBuilder appenderBuilder = null;
 
     switch (Utils.LOG_APPENDERS.value(appender)) {
